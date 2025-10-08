@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import cron from "node-cron";
 import { Client } from "@line/bot-sdk";
+import { google } from "googleapis";
 
 // Get directory path for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -36,8 +37,12 @@ try {
   let serviceAccount;
   try {
     serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+
+    if (serviceAccount.private_key) {
+       serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
   } catch (e) {
-    console.error("Invalid GOOGLE_SERVICE_ACCOUNT_JSON:", e.message);
+    console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:", e.message);
     process.exit(1);
   }
 
@@ -47,9 +52,19 @@ try {
     scopes: SCOPES,
   });
 
-  const client = await auth.getClient(); // <--- ต้อง await
-  sheets = google.sheets({ version: "v4", auth: client });
-  console.log("Google Sheets API initialized successfully");
+  const client = await auth.getClient();
+  const sheets = google.sheets({ version: "v4", auth: client });
+  console.log("✅ Google Sheets API connected successfully");
+
+  // const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
+  // const auth = new google.auth.GoogleAuth({
+  //   credentials: serviceAccount,
+  //   scopes: SCOPES,
+  // });
+
+  // const client = await auth.getClient(); // <--- ต้อง await
+  // sheets = google.sheets({ version: "v4", auth: client });
+  // console.log("Google Sheets API initialized successfully");
 } catch (error) {
   console.error("Google Sheets initialization error:", error.message);
   process.exit(1);
@@ -909,4 +924,5 @@ app.post("/test-single-reminder", async (req, res) => {
 // ====== Start server ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
