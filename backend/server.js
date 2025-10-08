@@ -28,10 +28,18 @@ let sheets;
 // ====== Google Sheets ======
 try {
   // อ่านไฟล์ JSON โดยตรง
-  const serviceAccountPath = join(__dirname, "service-account.json");
-  const serviceAccount = JSON.parse(
-    fs.readFileSync(serviceAccountPath, "utf8")
-  );
+  // const serviceAccountPath = join(__dirname, "service-account.json");
+  // const serviceAccount = JSON.parse(
+  //   fs.readFileSync(serviceAccountPath, "utf8")
+  // );
+
+  let serviceAccount;
+  try {
+    serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+  } catch (e) {
+    console.error("Invalid GOOGLE_SERVICE_ACCOUNT_JSON:", e.message);
+    process.exit(1);
+  }
 
   const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
   const auth = new google.auth.GoogleAuth({
@@ -901,3 +909,4 @@ app.post("/test-single-reminder", async (req, res) => {
 // ====== Start server ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
