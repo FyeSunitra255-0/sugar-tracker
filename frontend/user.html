@@ -204,7 +204,7 @@
                     // Fetch user data
                     try {
                         const res = await fetch(
-                            `https://sugar-tracker-eo64.onrender.com/user/${userId}`
+                            `https://sugar-tracker-eo64.onrender.com/user?userId=${userId}`
                         );
                         const result = await res.json();
 
