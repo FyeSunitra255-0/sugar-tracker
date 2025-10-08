@@ -7,7 +7,6 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import cron from "node-cron";
 import { Client } from "@line/bot-sdk";
-import { google } from "googleapis";
 
 // Get directory path for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -924,5 +923,6 @@ app.post("/test-single-reminder", async (req, res) => {
 // ====== Start server ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
