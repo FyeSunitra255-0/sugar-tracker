@@ -39,6 +39,8 @@ try {
     }
 
     const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
+    console.log("✅ PRIVATE KEY FIRST LINE:", serviceAccount.private_key.split("\n")[0]);
+    console.log("✅ PRIVATE KEY LAST LINE:", serviceAccount.private_key.split("\n").slice(-2));
     const auth = new google.auth.GoogleAuth({
         credentials: serviceAccount,
         scopes: SCOPES,
@@ -919,4 +921,5 @@ app.post("/test-single-reminder", async (req, res) => {
 // ====== Start server ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
