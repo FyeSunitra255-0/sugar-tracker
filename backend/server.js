@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -115,9 +118,9 @@ app.get("/check-user", async (req, res) => {
     res.json({ registered: exists });
 });
 
-app.get("/user/:userId", async (req, res) => {
+app.get("/user", async (req, res) => {
     try {
-        const { userId } = req.params;
+        const { userId } = req.query;
 
         if (!userId) {
             return res.status(400).json({
@@ -129,7 +132,7 @@ app.get("/user/:userId", async (req, res) => {
         // อ่านข้อมูลจาก Google Sheet
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: SPREADSHEET_ID,
-            range: "User!A:F", // userId | firstName | lastName | gender | birthDay | age
+            range: "Users!A:F", // userId | firstName | lastName | gender | birthDay | age
         });
 
         const rows = response.data.values;
