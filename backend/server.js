@@ -20,7 +20,8 @@ app.use(bodyParser.json());
 
 // ใช้ environment variable สำหรับ Spreadsheet ID เท่านั้น
 const SPREADSHEET_ID =
-    process.env.SPREADSHEET_ID || "12n9WzxXMZPF7a0Dpb2c10LprXNQqkqojKFQGhVN-QcU";
+    process.env.SPREADSHEET_ID ||
+    "12n9WzxXMZPF7a0Dpb2c10LprXNQqkqojKFQGhVN-QcU";
 const RANGE = "Users!A:E";
 
 let sheets;
@@ -31,16 +32,28 @@ try {
         serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
 
         if (serviceAccount.private_key) {
-            serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+            serviceAccount.private_key = serviceAccount.private_key.replace(
+                /\\n/g,
+                "\n"
+            );
         }
     } catch (e) {
-        console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:", e.message);
+        console.error(
+            "Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:",
+            e.message
+        );
         process.exit(1);
     }
 
     const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
-    console.log("✅ PRIVATE KEY FIRST LINE:", serviceAccount.private_key.split("\n")[0]);
-    console.log("✅ PRIVATE KEY LAST LINE:", serviceAccount.private_key.split("\n").slice(-2));
+    console.log(
+        "✅ PRIVATE KEY FIRST LINE:",
+        serviceAccount.private_key.split("\n")[0]
+    );
+    console.log(
+        "✅ PRIVATE KEY LAST LINE:",
+        serviceAccount.private_key.split("\n").slice(-2)
+    );
     const auth = new google.auth.GoogleAuth({
         credentials: serviceAccount,
         scopes: SCOPES,
@@ -54,15 +67,15 @@ try {
     process.exit(1);
 }
 
-  // const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
-  // const auth = new google.auth.GoogleAuth({
-  //   credentials: serviceAccount,
-  //   scopes: SCOPES,
-  // });
+// const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
+// const auth = new google.auth.GoogleAuth({
+//   credentials: serviceAccount,
+//   scopes: SCOPES,
+// });
 
-  // const client = await auth.getClient(); // <--- ต้อง await
-  // sheets = google.sheets({ version: "v4", auth: client });
-  // console.log("Google Sheets API initialized successfully");
+// const client = await auth.getClient(); // <--- ต้อง await
+// sheets = google.sheets({ version: "v4", auth: client });
+// console.log("Google Sheets API initialized successfully");
 // } catch (error) {
 //     console.error("Google Sheets initialization error:", error.message);
 //     process.exit(1);
@@ -100,6 +113,67 @@ app.get("/check-user", async (req, res) => {
     const exists = rows.some((r) => r[0] === userId);
 
     res.json({ registered: exists });
+});
+
+app.get("/user/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "userId is required",
+            });
+        }
+
+        // อ่านข้อมูลจาก Google Sheet
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: "User!A:F", // userId | firstName | lastName | gender | birthDay | age
+        });
+
+        const rows = response.data.values;
+
+        if (!rows || rows.length <= 1) {
+            return res.json({
+                success: false,
+                notRegistered: true,
+                message: "ไม่พบข้อมูลผู้ใช้ในระบบ",
+            });
+        }
+
+        // ค้นหาข้อมูลผู้ใช้ (ข้าม header row)
+        const userRow = rows.slice(1).find((row) => row[0] === userId);
+
+        if (!userRow) {
+            return res.json({
+                success: false,
+                notRegistered: true,
+                message: "ผู้ใช้ยังไม่ได้ลงทะเบียน",
+            });
+        }
+
+        // สร้าง user object
+        const user = {
+            userId: userRow[0],
+            firstName: userRow[1] || "",
+            lastName: userRow[2] || "",
+            gender: userRow[3] || "",
+            birthDay: userRow[4] || "",
+            age: userRow[5] || "",
+        };
+
+        return res.json({
+            success: true,
+            user: user,
+        });
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return res.status(500).json({
+            success: false,
+            message: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+        });
+    }
 });
 
 app.post("/register", async (req, res) => {
@@ -158,7 +232,8 @@ app.post("/sugar", async (req, res) => {
         // รองรับหลายชื่อตัวแปรจาก client
         const userId = req.body.userId || req.body.user_id;
         const sugarRaw = req.body.sugar ?? req.body.value ?? req.body.glucose;
-        const sugar = typeof sugarRaw === "number" ? sugarRaw : Number(sugarRaw);
+        const sugar =
+            typeof sugarRaw === "number" ? sugarRaw : Number(sugarRaw);
 
         const typeRaw =
             req.body.type ?? req.body.mealTiming ?? req.body.meal_timing;
@@ -184,14 +259,14 @@ app.post("/sugar", async (req, res) => {
             typeRaw === "before"
                 ? "ก่อนอาหาร"
                 : typeRaw === "after"
-                    ? "หลังอาหาร"
-                    : typeRaw;
+                ? "หลังอาหาร"
+                : typeRaw;
         const period =
             periodRaw === "morning"
                 ? "เช้า"
                 : periodRaw === "evening"
-                    ? "เย็น"
-                    : periodRaw;
+                ? "เย็น"
+                : periodRaw;
 
         // 1) เช็คว่า user ลงทะเบียนหรือยัง
         let existingUsers;
@@ -210,7 +285,9 @@ app.post("/sugar", async (req, res) => {
         }
 
         const users = existingUsers.data.values || [];
-        const isRegistered = users.some((row) => String(row[0]) === String(userId));
+        const isRegistered = users.some(
+            (row) => String(row[0]) === String(userId)
+        );
 
         if (!isRegistered) {
             return res.status(404).json({
@@ -399,7 +476,9 @@ app.get("/sugar/:range", async (req, res) => {
         const data = records.data.values || [];
         console.log(`Total records: ${data.length}`);
 
-        const userRecords = data.filter((row) => String(row[0]) === String(userId));
+        const userRecords = data.filter(
+            (row) => String(row[0]) === String(userId)
+        );
         console.log(`User records: ${userRecords.length}`);
 
         let labels = [];
@@ -433,16 +512,26 @@ app.get("/sugar/:range", async (req, res) => {
 
                     // หาข้อมูลก่อนอาหาร
                     const beforeRecord = userRecords.find(
-                        (r) => r[4] === dateStr && r[2] === "ก่อนอาหาร" && r[3] === period
+                        (r) =>
+                            r[4] === dateStr &&
+                            r[2] === "ก่อนอาหาร" &&
+                            r[3] === period
                     );
 
                     // หาข้อมูลหลังอาหาร
                     const afterRecord = userRecords.find(
-                        (r) => r[4] === dateStr && r[2] === "หลังอาหาร" && r[3] === period
+                        (r) =>
+                            r[4] === dateStr &&
+                            r[2] === "หลังอาหาร" &&
+                            r[3] === period
                     );
 
-                    beforeMeal.push(beforeRecord ? parseInt(beforeRecord[1]) : null);
-                    afterMeal.push(afterRecord ? parseInt(afterRecord[1]) : null);
+                    beforeMeal.push(
+                        beforeRecord ? parseInt(beforeRecord[1]) : null
+                    );
+                    afterMeal.push(
+                        afterRecord ? parseInt(afterRecord[1]) : null
+                    );
 
                     console.log(`${shortDate}-${period}:`, {
                         before: beforeRecord ? beforeRecord[1] : null,
@@ -554,7 +643,8 @@ app.get("/medication/records", async (req, res) => {
 
         // แปลงข้อมูลให้อยู่ในรูปแบบที่ต้องการ
         const formattedRecords = paginatedRecords.map((row) => {
-            const [userId, date, timeOfDay, mealRelation, status, logTime] = row;
+            const [userId, date, timeOfDay, mealRelation, status, logTime] =
+                row;
 
             return {
                 date: date || "",
@@ -606,7 +696,10 @@ app.post("/appointment", async (req, res) => {
         );
 
         if (isDuplicate) {
-            return res.json({ success: false, message: "คุณได้บันทึกนัดนี้แล้ว" });
+            return res.json({
+                success: false,
+                message: "คุณได้บันทึกนัดนี้แล้ว",
+            });
         }
 
         // เพิ่มข้อมูลใหม่
@@ -681,7 +774,10 @@ app.get("/appointment/records", async (req, res) => {
         const endIndex = startIndex + limitNum;
 
         // ตัดข้อมูลตาม pagination
-        const paginatedAppointments = allAppointments.slice(startIndex, endIndex);
+        const paginatedAppointments = allAppointments.slice(
+            startIndex,
+            endIndex
+        );
 
         console.log(
             `Page ${pageNum}/${totalPages}, showing ${paginatedAppointments.length} appointments`
@@ -728,7 +824,8 @@ app.get("/appointment", async (req, res) => {
         // ถ้ามี page parameter ให้ redirect ไป /appointment/records
         if (page) {
             return res.redirect(
-                `/appointment/records?userId=${userId}&page=${page}&limit=${limit || 12
+                `/appointment/records?userId=${userId}&page=${page}&limit=${
+                    limit || 12
                 }`
             );
         }
@@ -766,7 +863,6 @@ app.get("/appointment", async (req, res) => {
         });
     }
 });
-
 
 // ตั้งค่า LINE Bot
 const lineConfig = {
@@ -827,7 +923,9 @@ async function getAppointmentsToRemind() {
                 note: row[3] || "",
             }));
 
-        console.log(`Found ${appointmentsToRemind.length} appointments to remind`);
+        console.log(
+            `Found ${appointmentsToRemind.length} appointments to remind`
+        );
         return appointmentsToRemind;
     } catch (error) {
         console.error("Error fetching appointments to remind:", error);
@@ -875,19 +973,21 @@ cron.schedule(
     }
 );
 
-app.post('/webhook', (req, res) => {
-    console.log('Received webhook from LINE:', req.body);
+app.post("/webhook", (req, res) => {
+    console.log("Received webhook from LINE:", req.body);
 
     // ส่ง response กลับให้ LINE ทันที
-    res.status(200).send('OK');
+    res.status(200).send("OK");
 });
-
 
 // เพิ่ม endpoint สำหรับทดสอบการส่งการแจ้งเตือนด้วยตนเอง
 app.post("/test-reminder", async (req, res) => {
     try {
         await sendDailyReminders();
-        res.json({ success: true, message: "Daily reminders sent successfully" });
+        res.json({
+            success: true,
+            message: "Daily reminders sent successfully",
+        });
     } catch (error) {
         res.json({ success: false, message: error.message });
     }
@@ -921,5 +1021,3 @@ app.post("/test-single-reminder", async (req, res) => {
 // ====== Start server ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
