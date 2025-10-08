@@ -1,53 +1,58 @@
 <!DOCTYPE html>
 <html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ลงทะเบียนผู้ป่วย</title>
+        <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="./style.css" />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+        />
+    </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ลงทะเบียนผู้ป่วย</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="./style.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
+    <body>
+        <div id="loading">กำลังเข้าสู่ระบบ...</div>
+        <script>
+            const API_BASE_URL = "https://sugar-tracker-eo64.onrender.com";
 
-<body>
-  <div id="loading">กำลังเข้าสู่ระบบ...</div>
-  <script>
-    const API_BASE_URL = "https://sugar-tracker-eo64.onrender.com";
+            async function main() {
+                try {
+                    await liff.init({ liffId: "2008029649-pVZ4jaV5" });
 
-    async function main() {
-      try {
-        await liff.init({ liffId: "2008029649-pVZ4jaV5" });
+                    if (!liff.isLoggedIn()) {
+                        liff.login({ redirectUri: window.location.href });
+                        return;
+                    }
 
-        if (!liff.isLoggedIn()) {
-          liff.login({ redirectUri: window.location.href });
-          return;
-        }
+                    const profile = await liff.getProfile();
+                    const userId = profile.userId;
 
-        const profile = await liff.getProfile();
-        const userId = profile.userId;
+                    // ✅ เช็คว่าลงทะเบียนหรือยัง
+                    const res = await fetch(
+                        `${API_BASE_URL}/check-user?userId=${encodeURIComponent(
+                            userId
+                        )}`
+                    );
+                    const data = await res.json();
 
-        // ✅ เช็คว่าลงทะเบียนหรือยัง
-        const res = await fetch(`${API_BASE_URL}/check-user?userId=${encodeURIComponent(userId)}`);
-        const data = await res.json();
+                    if (data.registered) {
+                        // เคยลงทะเบียนแล้ว → ไปหน้า user
+                        window.location.href = "/user.html";
+                    } else {
+                        // ยังไม่เคย → ไปหน้า register
+                        window.location.href = "/register.html";
+                    }
+                } catch (err) {
+                    console.error("Auto-login error:", err);
+                    document.getElementById("loading").innerText =
+                        "เกิดข้อผิดพลาด กรุณารีเฟรชหน้าใหม่";
+                }
+            }
 
-        if (data.registered) {
-          // เคยลงทะเบียนแล้ว → ไปหน้า graph
-          window.location.href = "/graph.html";
-        } else {
-          // ยังไม่เคย → ไปหน้า register
-          window.location.href = "/register.html";
-        }
-      } catch (err) {
-        console.error("Auto-login error:", err);
-        document.getElementById("loading").innerText = "เกิดข้อผิดพลาด กรุณารีเฟรชหน้าใหม่";
-      }
-    }
-
-    main();
-  </script>
-</body>
-
-
+            main();
+        </script>
+    </body>
 </html>
