@@ -61,10 +61,10 @@ try {
   // const client = await auth.getClient(); // <--- ต้อง await
   // sheets = google.sheets({ version: "v4", auth: client });
   // console.log("Google Sheets API initialized successfully");
-} catch (error) {
-    console.error("Google Sheets initialization error:", error.message);
-    process.exit(1);
-}
+// } catch (error) {
+//     console.error("Google Sheets initialization error:", error.message);
+//     process.exit(1);
+// }
 
 // ฟังก์ชันช่วยแปลงเวลาเป็นโซนไทย
 function getThaiDateTime() {
@@ -919,3 +919,4 @@ app.post("/test-single-reminder", async (req, res) => {
 // ====== Start server ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
