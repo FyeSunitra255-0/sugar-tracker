@@ -675,7 +675,7 @@
                     throw new Error('ไม่มี userId');
                 }
 
-                const apiUrl = `https://sugar-track-backend-f26fe59af4ba.herokuapp.com/sugar/${range}?userId=${encodeURIComponent(currentUserId)}&_t=${Date.now()}`;
+                const apiUrl = `https://sugar-tracker-eo64.onrender.com/sugar/${range}?userId=${encodeURIComponent(currentUserId)}&_t=${Date.now()}`;
                 console.log('API URL:', apiUrl);
 
                 const res = await fetch(apiUrl, {
@@ -876,7 +876,7 @@
             document.getElementById("paginationInfo").style.display = "none";
 
             try {
-                const apiUrl = `https://sugar-track-backend-f26fe59af4ba.herokuapp.com/sugar/records?userId=${encodeURIComponent(currentUserId)}&page=${page}&limit=12&t=${Date.now()}`;
+                const apiUrl = `https://sugar-tracker-eo64.onrender.com/sugar/records?userId=${encodeURIComponent(currentUserId)}&page=${page}&limit=12&t=${Date.now()}`;
 
                 const res = await fetch(apiUrl, {
                     method: 'GET',
@@ -948,7 +948,7 @@
             document.getElementById("medicationPaginationInfo").style.display = "none";
 
             try {
-                const apiUrl = `https://sugar-track-backend-f26fe59af4ba.herokuapp.com/medication/records?userId=${encodeURIComponent(currentUserId)}&page=${page}&limit=12&t=${Date.now()}`;
+                const apiUrl = `https://sugar-tracker-eo64.onrender.com/medication/records?userId=${encodeURIComponent(currentUserId)}&page=${page}&limit=12&t=${Date.now()}`;
 
                 const res = await fetch(apiUrl, {
                     method: 'GET',
@@ -1054,7 +1054,7 @@
             document.getElementById("appointmentPaginationInfo").style.display = "none";
 
             try {
-                const apiUrl = `https://sugar-track-backend-f26fe59af4ba.herokuapp.com/appointment/records?userId=${encodeURIComponent(currentUserId)}&page=${page}&limit=12&t=${Date.now()}`;
+                const apiUrl = `https://sugar-tracker-eo64.onrender.com/appointment/records?userId=${encodeURIComponent(currentUserId)}&page=${page}&limit=12&t=${Date.now()}`;
 
                 const res = await fetch(apiUrl, {
                     method: 'GET',
@@ -1136,7 +1136,7 @@
             try {
                 currentUserId = await initializeLIFF();
                 if (!currentUserId) return;
-                const res = await fetch(`https://sugar-track-backend-f26fe59af4ba.herokuapp.com/check-user?userId=${encodeURIComponent(currentUserId)}`);
+                const res = await fetch(`https://sugar-tracker-eo64.onrender.com/check-user?userId=${encodeURIComponent(currentUserId)}`);
                 const data = await res.json();
 
                 if (!data.registered) {
