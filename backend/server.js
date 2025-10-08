@@ -25,20 +25,13 @@ const RANGE = "Users!A:E";
 
 let sheets;
 
-// ====== Google Sheets ======
 try {
-  // อ่านไฟล์ JSON โดยตรง
-  // const serviceAccountPath = join(__dirname, "service-account.json");
-  // const serviceAccount = JSON.parse(
-  //   fs.readFileSync(serviceAccountPath, "utf8")
-  // );
-
   let serviceAccount;
   try {
     serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
 
     if (serviceAccount.private_key) {
-       serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
     }
   } catch (e) {
     console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:", e.message);
@@ -52,8 +45,12 @@ try {
   });
 
   const client = await auth.getClient();
-  const sheets = google.sheets({ version: "v4", auth: client });
+  sheets = google.sheets({ version: "v4", auth: client }); // ✅ ไม่มี const
   console.log("✅ Google Sheets API connected successfully");
+} catch (error) {
+  console.error("Google Sheets initialization error:", error.message);
+  process.exit(1);
+}
 
   // const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
   // const auth = new google.auth.GoogleAuth({
@@ -923,6 +920,7 @@ app.post("/test-single-reminder", async (req, res) => {
 // ====== Start server ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
