@@ -179,7 +179,46 @@
 
             <div class="form-group">
                 <label for="appointmentTime">🕐 เวลาที่นัด:</label>
-                <input type="time" id="appointmentTime" name="time" required>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="appointmentHour" required
+                        style="flex: 1; padding: 12px; border: 2px solid #e8f5e8; border-radius: 10px; font-size: 1rem;">
+                        <option value="">ชั่วโมง</option>
+                        <option value="00">00</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                    </select>
+                    <span style="font-weight: bold; color: #0c7e47;">:</span>
+                    <select id="appointmentMinute" required
+                        style="flex: 1; padding: 12px; border: 2px solid #e8f5e8; border-radius: 10px; font-size: 1rem;">
+                        <option value="">นาที</option>
+                        <option value="00">00</option>
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="45">45</option>
+                    </select>
+                </div>
+                <input type="hidden" id="appointmentTime" name="time" required>
                 <div class="error-msg" id="timeError"></div>
             </div>
 
@@ -189,7 +228,7 @@
             </div>
 
             <button type="submit" class="submit-btn" id="submitBtn">
-                <span class="btn-text">💾 บันทึกการนัดหมาย</span>
+                <span class="btn-text">บันทึกการนัดหมาย</span>
                 <span class="loading" style="display:none">
                     <span class="spinner"></span>กำลังบันทึก...
                 </span>
@@ -198,6 +237,31 @@
     </div>
 
     <script>
+        // เมื่อ submit form ให้รวมชั่วโมงกับนาทีเป็น time format
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const hour = document.getElementById('appointmentHour').value;
+            const minute = document.getElementById('appointmentMinute').value;
+
+            if (!hour || !minute) {
+                e.preventDefault();
+                document.getElementById('timeError').textContent = 'กรุณาเลือกเวลา';
+                return;
+            }
+
+            // รวมเป็น HH:MM format
+            document.getElementById('appointmentTime').value = `${hour}:${minute}`;
+        });
+
+        // ถ้ามีค่าเริ่มต้น (เช่น แก้ไขข้อมูล) ให้แยกกลับมา
+        window.addEventListener('DOMContentLoaded', function () {
+            const timeInput = document.getElementById('appointmentTime');
+            if (timeInput.value) {
+                const [hour, minute] = timeInput.value.split(':');
+                document.getElementById('appointmentHour').value = hour;
+                document.getElementById('appointmentMinute').value = minute;
+            }
+        });
+
         // Configuration
         const CONFIG = {
             LIFF_ID: "2008029649-pVZ4jaV5",

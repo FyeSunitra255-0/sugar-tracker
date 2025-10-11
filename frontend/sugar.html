@@ -1,443 +1,826 @@
 <!DOCTYPE html>
 <html lang="th">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>บันทึกค่าน้ำตาล</title>
-        <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-            rel="stylesheet"
-        />
-        <link rel="stylesheet" href="css/sugar.css"/>
-    </head>
 
-    <body>
-        <div class="container">
-            <div class="header">
-                <div class="icon">
-                    <i class="fas fa-heartbeat"></i>
-                </div>
-                <h1>บันทึกค่าน้ำตาลในเลือด</h1>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>บันทึกค่าน้ำตาล</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f9f9f9 0%, #e8f5e8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(12, 126, 71, 0.1);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #0c7e47, #9fc780);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header .icon {
+            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(12, 126, 71, 0.2);
+        }
+
+        .header .icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .header h1 {
+            color: #0c7e47;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .sugar-input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-label {
+            display: block;
+            color: #0c7e47;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .sugar-input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .sugar-input {
+            width: 100%;
+            padding: 20px 25px;
+            border: 3px solid #e8f5e8;
+            border-radius: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            color: #0c7e47;
+            background: #f9f9f9;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .sugar-input:focus {
+            border-color: #9fc780;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(159, 199, 128, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .sugar-unit {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9fc780;
+            font-size: 1.2rem;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .range-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .range-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .range-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .range-dot.low {
+            background: #4ade80;
+        }
+
+        .range-dot.normal {
+            background: #22c55e;
+        }
+
+        .range-dot.high {
+            background: #f59e0b;
+        }
+
+        .range-dot.very-high {
+            background: #ef4444;
+        }
+
+        .status-display {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .status-display.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .status-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .status-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .status-desc {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* Status Colors */
+        .status-low {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-color: #4ade80;
+        }
+
+        .status-low .status-icon {
+            color: #16a34a;
+        }
+
+        .status-low .status-text {
+            color: #15803d;
+        }
+
+        .status-normal {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-color: #22c55e;
+        }
+
+        .status-normal .status-icon {
+            color: #16a34a;
+        }
+
+        .status-normal .status-text {
+            color: #15803d;
+        }
+
+        .status-high {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-color: #f59e0b;
+        }
+
+        .status-high .status-icon {
+            color: #d97706;
+        }
+
+        .status-high .status-text {
+            color: #92400e;
+        }
+
+        .status-very-high {
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            border-color: #ef4444;
+        }
+
+        .status-very-high .status-icon {
+            color: #dc2626;
+        }
+
+        .status-very-high .status-text {
+            color: #991b1b;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(12, 126, 71, 0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(12, 126, 71, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #e8f5e8, #f0f9ff);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #9fc780;
+        }
+
+        .tips-section h3 {
+            color: #0c7e47;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .sugar-input {
+                font-size: 1.8rem;
+                padding: 18px 20px;
+            }
+
+            .range-indicator {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+        }
+
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background: #f9f9f9;
+            border: 2px solid #e8f5e8;
+            border-radius: 15px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0c7e47;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            border-color: #9fc780;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(159, 199, 128, 0.1);
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-option input:checked+span {
+            color: #ffffff;
+        }
+
+        .radio-option input:checked~span {
+            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            border-radius: 10px;
+            padding: 5px 12px;
+        }
+
+        /* SweetAlert2 Custom Styles */
+        .swal2-popup {
+            border-radius: 20px;
+        }
+
+        .swal2-success .swal2-success-ring {
+            border-color: #0c7e47;
+        }
+
+        .swal2-success .swal2-success-fix {
+            background-color: #0c7e47;
+        }
+
+        .swal2-success .swal2-success-circular-line-right,
+        .swal2-success .swal2-success-circular-line-left {
+            background-color: #0c7e47;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">
+                <i class="fas fa-heartbeat"></i>
             </div>
-
-            <form id="sugarForm">
-                <!-- Meal Timing Section -->
-                <div class="sugar-input-section">
-                    <label class="input-label">ช่วงเวลา</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input
-                                id="type"
-                                type="radio"
-                                name="mealTiming"
-                                value="before"
-                            />
-                            <span>ก่อนอาหาร</span>
-                        </label>
-                        <label class="radio-option">
-                            <input
-                                id="type"
-                                type="radio"
-                                name="mealTiming"
-                                value="after"
-                            />
-                            <span>หลังอาหาร</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Time of Day Section -->
-                <div class="sugar-input-section">
-                    <label class="input-label">เวลา</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input
-                                id="period"
-                                type="radio"
-                                name="timeOfDay"
-                                value="morning"
-                            />
-                            <span>เช้า</span>
-                        </label>
-                        <label class="radio-option">
-                            <input
-                                id="period"
-                                type="radio"
-                                name="timeOfDay"
-                                value="evening"
-                            />
-                            <span>เย็น</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="sugar-input-section">
-                    <label class="input-label">กรอกค่าน้ำตาลในเลือด</label>
-                    <div class="sugar-input-wrapper">
-                        <input
-                            type="number"
-                            id="sugar"
-                            name="sugar"
-                            class="sugar-input"
-                            required
-                            min="20"
-                            max="600"
-                            placeholder="0"
-                        />
-                        <span class="sugar-unit">mg/dL</span>
-                    </div>
-                    <div class="range-indicator">
-                        <div class="range-item">
-                            <div class="range-dot low"></div>
-                            <span>ต่ำ (&lt;70)</span>
-                        </div>
-                        <div class="range-item">
-                            <div class="range-dot normal"></div>
-                            <span>ปกติ (70-140)</span>
-                        </div>
-                        <div class="range-item">
-                            <div class="range-dot high"></div>
-                            <span>สูง (140-200)</span>
-                        </div>
-                        <div class="range-item">
-                            <div class="range-dot very-high"></div>
-                            <span>สูงมาก (&gt;200)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="statusDisplay" class="status-display hidden">
-                    <i
-                        id="statusIcon"
-                        class="status-icon fas fa-question-circle"
-                    ></i>
-                    <div id="statusText" class="status-text">-</div>
-                    <div id="statusDesc" class="status-desc">-</div>
-                </div>
-
-                <button type="submit" class="submit-btn">
-                    <div class="btn-content">
-                        <div class="loading-spinner"></div>
-                        <i class="fas fa-save"></i>
-                        <span class="btn-text">บันทึกข้อมูล</span>
-                    </div>
-                </button>
-            </form>
+            <h1>บันทึกค่าน้ำตาลในเลือด</h1>
         </div>
 
-        <script>
-            // Sugar level evaluation function
-            function evaluateSugarLevel(value) {
-                const sugar = parseInt(value);
+        <form id="sugarForm">
+            <!-- Meal Timing Section -->
+            <div class="sugar-input-section">
+                <label class="input-label">ช่วงเวลา</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input id="type" type="radio" name="mealTiming" value="before" />
+                        <span>ก่อนอาหาร</span>
+                    </label>
+                    <label class="radio-option">
+                        <input id="type" type="radio" name="mealTiming" value="after" />
+                        <span>หลังอาหาร</span>
+                    </label>
+                </div>
+            </div>
 
-                if (sugar < 70) {
-                    return {
-                        status: "low",
-                        icon: "fa-arrow-down",
-                        text: "ระดับน้ำตาลต่ำ",
-                        desc: "ควรรับประทานอาหารหรือเครื่องดื่มหวาน",
-                    };
-                } else if (sugar <= 140) {
-                    return {
-                        status: "normal",
-                        icon: "fa-check-circle",
-                        text: "ระดับน้ำตาลปกติ",
-                        desc: "ค่าน้ำตาลในช่วงที่เหมาะสม",
-                    };
-                } else if (sugar <= 200) {
-                    return {
-                        status: "high",
-                        icon: "fa-exclamation-triangle",
-                        text: "ระดับน้ำตาลสูง",
-                        desc: "ควรควบคุมการรับประทาน และออกกำลังกาย",
-                    };
-                } else {
-                    return {
-                        status: "very-high",
-                        icon: "fa-exclamation-circle",
-                        text: "ระดับน้ำตาลสูงมาก",
-                        desc: "ควรปรึกษาแพทย์ และควบคุมอาหารอย่างเข้มงวด",
-                    };
-                }
+            <!-- Time of Day Section -->
+            <div class="sugar-input-section">
+                <label class="input-label">เวลา</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input id="period" type="radio" name="timeOfDay" value="morning" />
+                        <span>เช้า</span>
+                    </label>
+                    <label class="radio-option">
+                        <input id="period" type="radio" name="timeOfDay" value="evening" />
+                        <span>เย็น</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="sugar-input-section">
+                <label class="input-label">กรอกค่าน้ำตาลในเลือด</label>
+                <div class="sugar-input-wrapper">
+                    <input type="number" id="sugar" name="sugar" class="sugar-input" required min="20" max="600"
+                        placeholder="0" />
+                    <span class="sugar-unit">mg/dL</span>
+                </div>
+                <div class="range-indicator">
+                    <div class="range-item">
+                        <div class="range-dot low"></div>
+                        <span>ต่ำ (&lt;70)</span>
+                    </div>
+                    <div class="range-item">
+                        <div class="range-dot normal"></div>
+                        <span>ปกติ (70-140)</span>
+                    </div>
+                    <div class="range-item">
+                        <div class="range-dot high"></div>
+                        <span>สูง (140-200)</span>
+                    </div>
+                    <div class="range-item">
+                        <div class="range-dot very-high"></div>
+                        <span>สูงมาก (&gt;200)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="statusDisplay" class="status-display hidden">
+                <i id="statusIcon" class="status-icon fas fa-question-circle"></i>
+                <div id="statusText" class="status-text">-</div>
+                <div id="statusDesc" class="status-desc">-</div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <div class="btn-content">
+                    <div class="loading-spinner"></div>
+                    <i class="fas fa-save"></i>
+                    <span class="btn-text">บันทึกข้อมูล</span>
+                </div>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Sugar level evaluation function
+        function evaluateSugarLevel(value) {
+            const sugar = parseInt(value);
+
+            if (sugar < 70) {
+                return {
+                    status: "low",
+                    icon: "fa-arrow-down",
+                    text: "ระดับน้ำตาลต่ำ",
+                    desc: "ควรรับประทานอาหารหรือเครื่องดื่มหวาน",
+                };
+            } else if (sugar <= 140) {
+                return {
+                    status: "normal",
+                    icon: "fa-check-circle",
+                    text: "ระดับน้ำตาลปกติ",
+                    desc: "ค่าน้ำตาลในช่วงที่เหมาะสม",
+                };
+            } else if (sugar <= 200) {
+                return {
+                    status: "high",
+                    icon: "fa-exclamation-triangle",
+                    text: "ระดับน้ำตาลสูง",
+                    desc: "ควรควบคุมการรับประทาน และออกกำลังกาย",
+                };
+            } else {
+                return {
+                    status: "very-high",
+                    icon: "fa-exclamation-circle",
+                    text: "ระดับน้ำตาลสูงมาก",
+                    desc: "ควรปรึกษาแพทย์ และควบคุมอาหารอย่างเข้มงวด",
+                };
+            }
+        }
+
+        // Update status display
+        function updateStatusDisplay(value) {
+            const statusDisplay = document.getElementById("statusDisplay");
+            const statusIcon = document.getElementById("statusIcon");
+            const statusText = document.getElementById("statusText");
+            const statusDesc = document.getElementById("statusDesc");
+
+            if (!value) {
+                statusDisplay.classList.add("hidden");
+                return;
             }
 
-            // Update status display
-            function updateStatusDisplay(value) {
-                const statusDisplay = document.getElementById("statusDisplay");
-                const statusIcon = document.getElementById("statusIcon");
-                const statusText = document.getElementById("statusText");
-                const statusDesc = document.getElementById("statusDesc");
+            const evaluation = evaluateSugarLevel(value);
 
-                if (!value) {
-                    statusDisplay.classList.add("hidden");
-                    return;
-                }
+            // Remove all status classes
+            statusDisplay.className = "status-display";
 
-                const evaluation = evaluateSugarLevel(value);
+            // Add new status class
+            statusDisplay.classList.add(`status-${evaluation.status}`);
+            statusDisplay.classList.remove("hidden");
 
-                // Remove all status classes
-                statusDisplay.className = "status-display";
+            // Update content
+            statusIcon.className = `status-icon fas ${evaluation.icon}`;
+            statusText.textContent = evaluation.text;
+            statusDesc.textContent = evaluation.desc;
+        }
 
-                // Add new status class
-                statusDisplay.classList.add(`status-${evaluation.status}`);
-                statusDisplay.classList.remove("hidden");
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                await liff.init({ liffId: "2008029649-pVZ4jaV5" });
 
-                // Update content
-                statusIcon.className = `status-icon fas ${evaluation.icon}`;
-                statusText.textContent = evaluation.text;
-                statusDesc.textContent = evaluation.desc;
-            }
-
-            document.addEventListener("DOMContentLoaded", async () => {
-                try {
-                    await liff.init({ liffId: "2008029649-pVZ4jaV5" });
-
-                    // ✅ ฟังก์ชันดึง userId (ใช้เหมือนหน้า index)
-                    async function getUserId() {
-                        if (!liff.isLoggedIn()) {
-                            console.log(
-                                "User not logged in → redirecting to login..."
-                            );
-                            liff.login({ redirectUri: window.location.href });
-                            return null;
-                        }
-                        try {
-                            const profile = await liff.getProfile();
-                            console.log("Got user:", profile.displayName);
-                            return profile.userId;
-                        } catch (err) {
-                            console.log("Error getting profile:", err);
-                            if (
-                                err.message &&
-                                (err.message.includes("token") ||
-                                    err.message.includes("401") ||
-                                    err.message.includes("unauthorized"))
-                            ) {
-                                console.log(
-                                    "Token expired → logout and re-login..."
-                                );
-                                liff.logout();
-                                liff.login({
-                                    redirectUri: window.location.href,
-                                });
-                                return null;
-                            }
-                            throw err;
-                        }
+                // ✅ ฟังก์ชันดึง userId (ใช้เหมือนหน้า index)
+                async function getUserId() {
+                    if (!liff.isLoggedIn()) {
+                        console.log(
+                            "User not logged in → redirecting to login..."
+                        );
+                        liff.login({ redirectUri: window.location.href });
+                        return null;
                     }
-
-                    // ✅ ตรวจสอบ userId
-                    const userId = await getUserId();
-                    if (!userId) return;
-
-                    console.log("User ID:", userId);
-
-                    // --- Elements ---
-                    const sugarInput = document.getElementById("sugar");
-                    const form = document.getElementById("sugarForm");
-                    const submitBtn = document.querySelector(".submit-btn");
-                    const btnText = submitBtn.querySelector(".btn-text");
-                    const btnIcon = submitBtn.querySelector("i.fa-save");
-                    const loadingSpinner =
-                        submitBtn.querySelector(".loading-spinner");
-
-                    // --- ฟังก์ชัน update indicator ---
-                    const mealTimingInputs = document.querySelectorAll(
-                        'input[name="mealTiming"]'
-                    );
-                    mealTimingInputs.forEach((input) => {
-                        input.addEventListener("change", () => {
-                            updateRangeIndicator(input.value);
-                            if (sugarInput.value)
-                                updateStatusDisplay(sugarInput.value);
-                        });
-                    });
-
-                    sugarInput.addEventListener("input", (e) => {
-                        updateStatusDisplay(e.target.value);
-                    });
-
-                    // --- Submit handler ---
-                    form.addEventListener("submit", async (e) => {
-                        e.preventDefault();
-
-                        const sugar = parseInt(sugarInput.value);
-                        const mealTiming = document.querySelector(
-                            'input[name="mealTiming"]:checked'
-                        );
-                        const timeOfDay = document.querySelector(
-                            'input[name="timeOfDay"]:checked'
-                        );
-
-                        if (!sugar || sugar < 20 || sugar > 600) {
-                            return Swal.fire({
-                                title: "ค่าไม่ถูกต้อง",
-                                text: "กรุณากรอกค่าน้ำตาลระหว่าง 20–600 mg/dL",
-                                icon: "warning",
-                                confirmButtonColor: "#0c7e47",
-                            });
-                        }
-                        if (!mealTiming) {
-                            return Swal.fire({
-                                title: "กรุณาเลือกช่วงเวลา",
-                                text: "กรุณาเลือกว่าเป็นก่อน/หลังอาหาร",
-                                icon: "warning",
-                                confirmButtonColor: "#0c7e47",
-                            });
-                        }
-                        if (!timeOfDay) {
-                            return Swal.fire({
-                                title: "กรุณาเลือกเวลา",
-                                text: "กรุณาเลือกเช้า/เย็น",
-                                icon: "warning",
-                                confirmButtonColor: "#0c7e47",
-                            });
-                        }
-
-                        // show loading
-                        submitBtn.disabled = true;
-                        btnText.textContent = "กำลังบันทึก...";
-                        btnIcon.style.display = "none";
-                        loadingSpinner.style.display = "inline-block";
-
-                        try {
-                            const currentUserId = await getUserId();
-                            if (!currentUserId)
-                                throw new Error("SESSION_EXPIRED");
-
-                            const payload = {
-                                userId: currentUserId,
-                                sugar,
-                                mealTiming: mealTiming.value,
-                                timeOfDay: timeOfDay.value,
-                            };
-                            console.log("Sending:", payload);
-
-                            const res = await fetch(
-                                "https://sugar-tracker-eo64.onrender.com/sugar",
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify(payload),
-                                }
-                            );
-
-                            const result = await res.json();
-                            console.log("Response:", result);
-
-                            if (result.success) {
-                                await Swal.fire({
-                                    title: "บันทึกสำเร็จ!",
-                                    text: "บันทึกข้อมูลค่าน้ำตาลแล้ว",
-                                    icon: "success",
-                                    confirmButtonColor: "#0c7e47",
-                                    timer: 2500,
-                                    timerProgressBar: true,
-                                });
-                                form.reset();
-                                updateStatusDisplay("");
-                            } else if (result.isDuplicate) {
-                                await Swal.fire({
-                                    title: "ข้อมูลซ้ำ!",
-                                    text: result.message,
-                                    icon: "warning",
-                                    confirmButtonColor: "#ffc107",
-                                });
-                            } else if (result.notRegistered) {
-                                await Swal.fire({
-                                    title: "ยังไม่ได้ลงทะเบียน",
-                                    text: "กรุณาลงทะเบียนก่อนใช้งาน",
-                                    icon: "error",
-                                    confirmButtonColor: "#0c7e47",
-                                }).then(
-                                    () =>
-                                        (window.location.href =
-                                            "/register.html")
-                                );
-                            } else {
-                                await Swal.fire({
-                                    title: "แจ้งเตือน",
-                                    text:
-                                        result.message ||
-                                        "เกิดข้อผิดพลาดในการบันทึก",
-                                    icon: "warning",
-                                    confirmButtonColor: "#0c7e47",
-                                });
-                            }
-                        } catch (err) {
-                            console.error("Submit error:", err);
-                            if (err.message !== "SESSION_EXPIRED") {
-                                await Swal.fire({
-                                    title: "เกิดข้อผิดพลาด",
-                                    text: "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้",
-                                    icon: "error",
-                                    confirmButtonColor: "#0c7e47",
-                                });
-                            }
-                        } finally {
-                            submitBtn.disabled = false;
-                            btnText.textContent = "บันทึกข้อมูล";
-                            btnIcon.style.display = "inline-block";
-                            loadingSpinner.style.display = "none";
-                        }
-                    });
-
-                    // ✅ เช็ค session ทุก 10 นาที
-                    setInterval(async () => {
-                        try {
-                            await getUserId();
-                        } catch (err) {
-                            console.log("Session check failed:", err);
-                        }
-                    }, 10 * 60 * 1000);
-                } catch (err) {
-                    console.error("LIFF Init Error:", err);
-                    await Swal.fire({
-                        title: "เกิดข้อผิดพลาด",
-                        text: "ไม่สามารถเชื่อมต่อกับ LINE ได้",
-                        icon: "error",
-                        confirmButtonColor: "#0c7e47",
-                    }).then(() => window.location.reload());
-                }
-            });
-
-            // จัดการเมื่อหน้าเว็บกลับมา visible (หลังจาก login)
-            document.addEventListener("visibilitychange", () => {
-                if (!document.hidden) {
-                    // เมื่อหน้าเว็บกลับมา visible หลังจาก login
-                    setTimeout(() => {
+                    try {
+                        const profile = await liff.getProfile();
+                        console.log("Got user:", profile.displayName);
+                        return profile.userId;
+                    } catch (err) {
+                        console.log("Error getting profile:", err);
                         if (
-                            typeof liff !== "undefined" &&
-                            liff.isReady() &&
-                            liff.isLoggedIn()
+                            err.message &&
+                            (err.message.includes("token") ||
+                                err.message.includes("401") ||
+                                err.message.includes("unauthorized"))
                         ) {
                             console.log(
-                                "User returned from login - reloading page"
+                                "Token expired → logout and re-login..."
                             );
-                            window.location.reload();
+                            liff.logout();
+                            liff.login({
+                                redirectUri: window.location.href,
+                            });
+                            return null;
                         }
-                    }, 1000);
+                        throw err;
+                    }
                 }
-            });
 
-            // เพิ่ม event listener สำหรับการกลับมาจาก LINE login
-            window.addEventListener("focus", () => {
-                if (
-                    typeof liff !== "undefined" &&
-                    liff.isReady() &&
-                    liff.isLoggedIn()
-                ) {
-                    console.log("Window focused and user is logged in");
-                    // รอสักครู่แล้ว reload เพื่อให้ได้ userId ใหม่
-                    setTimeout(() => {
+                // ✅ ตรวจสอบ userId
+                const userId = await getUserId();
+                if (!userId) return;
+
+                console.log("User ID:", userId);
+
+                // --- Elements ---
+                const sugarInput = document.getElementById("sugar");
+                const form = document.getElementById("sugarForm");
+                const submitBtn = document.querySelector(".submit-btn");
+                const btnText = submitBtn.querySelector(".btn-text");
+                const btnIcon = submitBtn.querySelector("i.fa-save");
+                const loadingSpinner =
+                    submitBtn.querySelector(".loading-spinner");
+
+                // --- ฟังก์ชัน update indicator ---
+                const mealTimingInputs = document.querySelectorAll(
+                    'input[name="mealTiming"]'
+                );
+                mealTimingInputs.forEach((input) => {
+                    input.addEventListener("change", () => {
+                        updateRangeIndicator(input.value);
+                        if (sugarInput.value)
+                            updateStatusDisplay(sugarInput.value);
+                    });
+                });
+
+                sugarInput.addEventListener("input", (e) => {
+                    updateStatusDisplay(e.target.value);
+                });
+
+                // --- Submit handler ---
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const sugar = parseInt(sugarInput.value);
+                    const mealTiming = document.querySelector(
+                        'input[name="mealTiming"]:checked'
+                    );
+                    const timeOfDay = document.querySelector(
+                        'input[name="timeOfDay"]:checked'
+                    );
+
+                    if (!sugar || sugar < 20 || sugar > 600) {
+                        return Swal.fire({
+                            title: "ค่าไม่ถูกต้อง",
+                            text: "กรุณากรอกค่าน้ำตาลระหว่าง 20–600 mg/dL",
+                            icon: "warning",
+                            confirmButtonColor: "#0c7e47",
+                        });
+                    }
+                    if (!mealTiming) {
+                        return Swal.fire({
+                            title: "กรุณาเลือกช่วงเวลา",
+                            text: "กรุณาเลือกว่าเป็นก่อน/หลังอาหาร",
+                            icon: "warning",
+                            confirmButtonColor: "#0c7e47",
+                        });
+                    }
+                    if (!timeOfDay) {
+                        return Swal.fire({
+                            title: "กรุณาเลือกเวลา",
+                            text: "กรุณาเลือกเช้า/เย็น",
+                            icon: "warning",
+                            confirmButtonColor: "#0c7e47",
+                        });
+                    }
+
+                    // show loading
+                    submitBtn.disabled = true;
+                    btnText.textContent = "กำลังบันทึก...";
+                    btnIcon.style.display = "none";
+                    loadingSpinner.style.display = "inline-block";
+
+                    try {
+                        const currentUserId = await getUserId();
+                        if (!currentUserId)
+                            throw new Error("SESSION_EXPIRED");
+
+                        const payload = {
+                            userId: currentUserId,
+                            sugar,
+                            mealTiming: mealTiming.value,
+                            timeOfDay: timeOfDay.value,
+                        };
+                        console.log("Sending:", payload);
+
+                        const res = await fetch(
+                            "https://sugar-tracker-eo64.onrender.com/sugar",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(payload),
+                            }
+                        );
+
+                        const result = await res.json();
+                        console.log("Response:", result);
+
+                        if (result.success) {
+                            await Swal.fire({
+                                title: "บันทึกสำเร็จ!",
+                                text: "บันทึกข้อมูลค่าน้ำตาลแล้ว",
+                                icon: "success",
+                                confirmButtonColor: "#0c7e47",
+                                timer: 2500,
+                                timerProgressBar: true,
+                            });
+                            form.reset();
+                            updateStatusDisplay("");
+                        } else if (result.isDuplicate) {
+                            await Swal.fire({
+                                title: "ข้อมูลซ้ำ!",
+                                text: result.message,
+                                icon: "warning",
+                                confirmButtonColor: "#ffc107",
+                            });
+                        } else if (result.notRegistered) {
+                            await Swal.fire({
+                                title: "ยังไม่ได้ลงทะเบียน",
+                                text: "กรุณาลงทะเบียนก่อนใช้งาน",
+                                icon: "error",
+                                confirmButtonColor: "#0c7e47",
+                            }).then(
+                                () =>
+                                (window.location.href =
+                                    "/register.html")
+                            );
+                        } else {
+                            await Swal.fire({
+                                title: "แจ้งเตือน",
+                                text:
+                                    result.message ||
+                                    "เกิดข้อผิดพลาดในการบันทึก",
+                                icon: "warning",
+                                confirmButtonColor: "#0c7e47",
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Submit error:", err);
+                        if (err.message !== "SESSION_EXPIRED") {
+                            await Swal.fire({
+                                title: "เกิดข้อผิดพลาด",
+                                text: "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้",
+                                icon: "error",
+                                confirmButtonColor: "#0c7e47",
+                            });
+                        }
+                    } finally {
+                        submitBtn.disabled = false;
+                        btnText.textContent = "บันทึกข้อมูล";
+                        btnIcon.style.display = "inline-block";
+                        loadingSpinner.style.display = "none";
+                    }
+                });
+
+                // ✅ เช็ค session ทุก 10 นาที
+                setInterval(async () => {
+                    try {
+                        await getUserId();
+                    } catch (err) {
+                        console.log("Session check failed:", err);
+                    }
+                }, 10 * 60 * 1000);
+            } catch (err) {
+                console.error("LIFF Init Error:", err);
+                await Swal.fire({
+                    title: "เกิดข้อผิดพลาด",
+                    text: "ไม่สามารถเชื่อมต่อกับ LINE ได้",
+                    icon: "error",
+                    confirmButtonColor: "#0c7e47",
+                }).then(() => window.location.reload());
+            }
+        });
+
+        // จัดการเมื่อหน้าเว็บกลับมา visible (หลังจาก login)
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) {
+                // เมื่อหน้าเว็บกลับมา visible หลังจาก login
+                setTimeout(() => {
+                    if (
+                        typeof liff !== "undefined" &&
+                        liff.isReady() &&
+                        liff.isLoggedIn()
+                    ) {
+                        console.log(
+                            "User returned from login - reloading page"
+                        );
                         window.location.reload();
-                    }, 500);
-                }
-            });
-        </script>
-    </body>
+                    }
+                }, 1000);
+            }
+        });
+
+        // เพิ่ม event listener สำหรับการกลับมาจาก LINE login
+        window.addEventListener("focus", () => {
+            if (
+                typeof liff !== "undefined" &&
+                liff.isReady() &&
+                liff.isLoggedIn()
+            ) {
+                console.log("Window focused and user is logged in");
+                // รอสักครู่แล้ว reload เพื่อให้ได้ userId ใหม่
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+
 </html>

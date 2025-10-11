@@ -1,368 +1,462 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>ข้อมูลผู้ใช้</title>
-        <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <link rel="stylesheet" href="./style.css" />
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-            rel="stylesheet"
-        />
-        <style>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ข้อมูลผู้ใช้</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c7e47 0%, #9fc780 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-icon i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 25px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0c7e47, #9fc780);
+        }
+
+        .profile-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 2px dashed #e8f5e8;
+            position: relative;
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .profile-item-header {
+            margin-bottom: 12px;
+        }
+
+        .profile-label {
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-value {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .loading-container {
+            background: white;
+            border-radius: 25px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .loading-spinner-large {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #e8f5e8;
+            border-top: 5px solid #0c7e47;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .gender-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .gender-male {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1565c0;
+        }
+
+        .gender-female {
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            color: #c2185b;
+        }
+
+        .gender-other {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            color: #7b1fa2;
+        }
+
+        .age-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            color: #2e7d32;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .birth-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .birth-icon {
+            color: #0c7e47;
+        }
+
+        @media (max-width: 480px) {
             .profile-card {
-                background: #f9f9f9;
-                border-radius: 15px;
-                padding: 25px;
-                margin-bottom: 20px;
-            }
-
-            .profile-item {
-                display: flex;
-                align-items: center;
-                padding: 15px 0;
-                border-bottom: 1px solid #e8f5e8;
-            }
-
-            .profile-item:last-child {
-                border-bottom: none;
-            }
-
-            .profile-item i {
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: linear-gradient(135deg, #0c7e47, #9fc780);
-                color: white;
-                border-radius: 10px;
-                margin-right: 15px;
-                font-size: 1.2rem;
-            }
-
-            .profile-item-content {
-                flex: 1;
-            }
-
-            .profile-label {
-                font-size: 0.85rem;
-                color: #666;
-                margin-bottom: 3px;
+                padding: 25px 20px;
             }
 
             .profile-value {
-                font-size: 1.1rem;
-                color: #333;
-                font-weight: 600;
+                font-size: 1.15rem;
             }
 
-            .loading-container {
-                text-align: center;
-                padding: 40px 20px;
+            .header-title {
+                font-size: 1.5rem;
             }
+        }
+    </style>
+</head>
 
-            .loading-spinner-large {
-                width: 50px;
-                height: 50px;
-                border: 4px solid #e8f5e8;
-                border-top: 4px solid #0c7e47;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-                margin: 0 auto 20px;
-            }
+<body>
+    <div class="container">
+        <div class="header-section">
+            <div class="header-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <h1 class="header-title">ข้อมูลผู้ใช้</h1>
+        </div>
 
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
+        <div id="loadingContainer" class="loading-container">
+            <div class="loading-spinner-large"></div>
+            <p class="loading-text">กำลังโหลดข้อมูล...</p>
+        </div>
 
-            .gender-badge {
-                display: inline-block;
-                padding: 5px 15px;
-                border-radius: 20px;
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-
-            .gender-male {
-                background: #e3f2fd;
-                color: #1976d2;
-            }
-
-            .gender-female {
-                background: #fce4ec;
-                color: #c2185b;
-            }
-
-            .gender-other {
-                background: #f3e5f5;
-                color: #7b1fa2;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <div class="icon">
-                    <i class="fas fa-user-circle"></i>
+        <div id="profileContent" style="display: none">
+            <div class="profile-card">
+                <div class="profile-item">
+                    <div class="profile-item-header">
+                        <div class="profile-label">ชื่อ-นามสกุล</div>
+                    </div>
+                    <div class="profile-value" id="fullName">-</div>
                 </div>
-                <h1>ข้อมูลผู้ใช้</h1>
-            </div>
 
-            <div id="loadingContainer" class="loading-container">
-                <div class="loading-spinner-large"></div>
-                <p style="color: #666">กำลังโหลดข้อมูล...</p>
-            </div>
-
-            <div id="profileContent" style="display: none">
-                <div class="profile-card">
-                    <div class="profile-item">
-                        <i class="fas fa-signature"></i>
-                        <div class="profile-item-content">
-                            <div class="profile-label">ชื่อ-นามสกุล</div>
-                            <div class="profile-value" id="fullName">-</div>
-                        </div>
+                <div class="profile-item">
+                    <div class="profile-item-header">
+                        <div class="profile-label">เพศ</div>
                     </div>
+                    <div class="profile-value" id="gender">-</div>
+                </div>
 
-                    <div class="profile-item">
-                        <i class="fas fa-venus-mars"></i>
-                        <div class="profile-item-content">
-                            <div class="profile-label">เพศ</div>
-                            <div class="profile-value" id="gender">-</div>
-                        </div>
+                <div class="profile-item">
+                    <div class="profile-item-header">
+                        <div class="profile-label">วันเกิด</div>
                     </div>
+                    <div class="profile-value" id="birthDay">-</div>
+                </div>
 
-                    <div class="profile-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        <div class="profile-item-content">
-                            <div class="profile-label">วันเกิด</div>
-                            <div class="profile-value" id="birthDay">-</div>
-                        </div>
+                <div class="profile-item">
+                    <div class="profile-item-header">
+                        <div class="profile-label">อายุ</div>
                     </div>
-
-                    <div class="profile-item">
-                        <i class="fas fa-hourglass-half"></i>
-                        <div class="profile-item-content">
-                            <div class="profile-label">อายุ</div>
-                            <div class="profile-value" id="age">-</div>
-                        </div>
-                    </div>
+                    <div class="profile-value" id="age">-</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", async () => {
-                try {
-                    await liff.init({ liffId: "2008029649-pVZ4jaV5" });
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                await liff.init({ liffId: "2008029649-pVZ4jaV5" });
 
-                    async function getUserId() {
-                        if (!liff.isLoggedIn()) {
-                            console.log(
-                                "User not logged in → redirecting to login..."
-                            );
-                            liff.login({ redirectUri: window.location.href });
-                            return null;
-                        }
-                        try {
-                            const profile = await liff.getProfile();
-                            console.log("Got user:", profile.displayName);
-                            return profile.userId;
-                        } catch (err) {
-                            console.log("Error getting profile:", err);
-                            if (
-                                err.message &&
-                                (err.message.includes("token") ||
-                                    err.message.includes("401") ||
-                                    err.message.includes("unauthorized"))
-                            ) {
-                                console.log(
-                                    "Token expired → logout and re-login..."
-                                );
-                                liff.logout();
-                                liff.login({
-                                    redirectUri: window.location.href,
-                                });
-                                return null;
-                            }
-                            throw err;
-                        }
-                    }
-
-                    const userId = await getUserId();
-                    if (!userId) return;
-
-                    console.log("User ID:", userId);
-
-                    // Fetch user data
-                    try {
-                        const res = await fetch(
-                            `https://sugar-tracker-eo64.onrender.com/user?userId=${userId}`
+                async function getUserId() {
+                    if (!liff.isLoggedIn()) {
+                        console.log(
+                            "User not logged in → redirecting to login..."
                         );
-                        const result = await res.json();
-
-                        console.log("User data:", result);
-
-                        if (result.success && result.user) {
-                            const user = result.user;
-
-                            // Display user data
-                            document.getElementById(
-                                "fullName"
-                            ).textContent = `${user.firstName} ${user.lastName}`;
-
-                            // Format gender
-                            const genderMap = {
-                                male: {
-                                    text: "ชาย",
-                                    class: "gender-male",
-                                    icon: "mars",
-                                },
-                                female: {
-                                    text: "หญิง",
-                                    class: "gender-female",
-                                    icon: "venus",
-                                },
-                                other: {
-                                    text: "อื่นๆ",
-                                    class: "gender-other",
-                                    icon: "genderless",
-                                },
-                                ชาย: {
-                                    text: "ชาย",
-                                    class: "gender-male",
-                                    icon: "mars",
-                                },
-                                หญิง: {
-                                    text: "หญิง",
-                                    class: "gender-female",
-                                    icon: "venus",
-                                },
-                            };
-                            const genderInfo =
-                                genderMap[user.gender] || genderMap.other;
-                            document.getElementById(
-                                "gender"
-                            ).innerHTML = `<span class="gender-badge ${genderInfo.class}">
-                                    <i class="fas fa-${genderInfo.icon}"></i> ${genderInfo.text}
-                                </span>`;
-
-                            // Format birthday
-                            const birthDate = new Date(user.birthDay);
-                            const thaiMonths = [
-                                "มกราคม",
-                                "กุมภาพันธ์",
-                                "มีนาคม",
-                                "เมษายน",
-                                "พฤษภาคม",
-                                "มิถุนายน",
-                                "กรกฎาคม",
-                                "สิงหาคม",
-                                "กันยายน",
-                                "ตุลาคม",
-                                "พฤศจิกายน",
-                                "ธันวาคม",
-                            ];
-                            const day = birthDate.getDate();
-                            const month = thaiMonths[birthDate.getMonth()];
-                            const year = birthDate.getFullYear() + 543;
-                            document.getElementById(
-                                "birthDay"
-                            ).textContent = `${day} ${month} ${year}`;
-
-                            // Display age
-                            document.getElementById(
-                                "age"
-                            ).textContent = `${user.age} ปี`;
-
-                            // Show profile content
-                            document.getElementById(
-                                "loadingContainer"
-                            ).style.display = "none";
-                            document.getElementById(
-                                "profileContent"
-                            ).style.display = "block";
-                        } else if (result.notRegistered) {
-                            await Swal.fire({
-                                title: "ยังไม่ได้ลงทะเบียน",
-                                text: "กรุณาลงทะเบียนก่อนใช้งาน",
-                                icon: "warning",
-                                confirmButtonColor: "#0c7e47",
-                            }).then(() => {
-                                window.location.href = "/register.html";
-                            });
-                        } else {
-                            throw new Error(
-                                result.message || "ไม่พบข้อมูลผู้ใช้"
-                            );
-                        }
-                    } catch (err) {
-                        console.error("Fetch error:", err);
-                        await Swal.fire({
-                            title: "เกิดข้อผิดพลาด",
-                            text: "ไม่สามารถโหลดข้อมูลผู้ใช้ได้",
-                            icon: "error",
-                            confirmButtonColor: "#0c7e47",
-                        });
+                        liff.login({ redirectUri: window.location.href });
+                        return null;
                     }
-
-                    // Session check every 10 minutes
-                    setInterval(async () => {
-                        try {
-                            await getUserId();
-                        } catch (err) {
-                            console.log("Session check failed:", err);
-                        }
-                    }, 10 * 60 * 1000);
-                } catch (err) {
-                    console.error("LIFF Init Error:", err);
-                    await Swal.fire({
-                        title: "เกิดข้อผิดพลาด",
-                        text: "ไม่สามารถเชื่อมต่อกับ LINE ได้",
-                        icon: "error",
-                        confirmButtonColor: "#0c7e47",
-                    }).then(() => window.location.reload());
-                }
-            });
-
-            // Handle page visibility change
-            document.addEventListener("visibilitychange", () => {
-                if (!document.hidden) {
-                    setTimeout(() => {
+                    try {
+                        const profile = await liff.getProfile();
+                        console.log("Got user:", profile.displayName);
+                        return profile.userId;
+                    } catch (err) {
+                        console.log("Error getting profile:", err);
                         if (
-                            typeof liff !== "undefined" &&
-                            liff.isReady() &&
-                            liff.isLoggedIn()
+                            err.message &&
+                            (err.message.includes("token") ||
+                                err.message.includes("401") ||
+                                err.message.includes("unauthorized"))
                         ) {
                             console.log(
-                                "User returned from login - reloading page"
+                                "Token expired → logout and re-login..."
                             );
-                            window.location.reload();
+                            liff.logout();
+                            liff.login({
+                                redirectUri: window.location.href,
+                            });
+                            return null;
                         }
-                    }, 1000);
+                        throw err;
+                    }
                 }
-            });
 
-            // Handle window focus
-            window.addEventListener("focus", () => {
-                if (
-                    typeof liff !== "undefined" &&
-                    liff.isReady() &&
-                    liff.isLoggedIn()
-                ) {
-                    console.log("Window focused and user is logged in");
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
+                const userId = await getUserId();
+                if (!userId) return;
+
+                console.log("User ID:", userId);
+
+                // Fetch user data
+                try {
+                    const res = await fetch(
+                        `https://sugar-tracker-eo64.onrender.com/user?userId=${userId}`
+                    );
+                    const result = await res.json();
+
+                    console.log("User data:", result);
+
+                    if (result.success && result.user) {
+                        const user = result.user;
+
+                        // Display user data
+                        document.getElementById(
+                            "fullName"
+                        ).textContent = `${user.firstName} ${user.lastName}`;
+
+                        // Format gender
+                        const genderMap = {
+                            male: {
+                                text: "ชาย",
+                                class: "gender-male",
+                            },
+                            female: {
+                                text: "หญิง",
+                                class: "gender-female",
+                            },
+                            other: {
+                                text: "อื่นๆ",
+                                class: "gender-other",
+                            },
+                            ชาย: {
+                                text: "ชาย",
+                                class: "gender-male",
+                            },
+                            หญิง: {
+                                text: "หญิง",
+                                class: "gender-female",
+                            },
+                        };
+                        const genderInfo =
+                            genderMap[user.gender] || genderMap.other;
+                        document.getElementById(
+                            "gender"
+                        ).innerHTML = `<span class="gender-badge ${genderInfo.class}">${genderInfo.text}</span>`;
+
+                        // Format birthday
+                        const birthDate = new Date(user.birthDay);
+                        const thaiMonths = [
+                            "มกราคม",
+                            "กุมภาพันธ์",
+                            "มีนาคม",
+                            "เมษายน",
+                            "พฤษภาคม",
+                            "มิถุนายน",
+                            "กรกฎาคม",
+                            "สิงหาคม",
+                            "กันยายน",
+                            "ตุลาคม",
+                            "พฤศจิกายน",
+                            "ธันวาคม",
+                        ];
+                        const day = birthDate.getDate();
+                        const month = thaiMonths[birthDate.getMonth()];
+                        const year = birthDate.getFullYear() + 543;
+                        document.getElementById(
+                            "birthDay"
+                        ).innerHTML = `<div class="birth-date">
+                                <span>${day} ${month} ${year}</span>
+                            </div>`;
+
+                        // Display age
+                        document.getElementById(
+                            "age"
+                        ).innerHTML = `<span class="age-highlight">
+                                ${user.age} ปี
+                            </span>`;
+
+                        // Show profile content
+                        document.getElementById(
+                            "loadingContainer"
+                        ).style.display = "none";
+                        document.getElementById(
+                            "profileContent"
+                        ).style.display = "block";
+                    } else if (result.notRegistered) {
+                        await Swal.fire({
+                            title: "ยังไม่ได้ลงทะเบียน",
+                            text: "กรุณาลงทะเบียนก่อนใช้งาน",
+                            icon: "warning",
+                            confirmButtonColor: "#0c7e47",
+                        }).then(() => {
+                            window.location.href = "/register.html";
+                        });
+                    } else {
+                        throw new Error(
+                            result.message || "ไม่พบข้อมูลผู้ใช้"
+                        );
+                    }
+                } catch (err) {
+                    console.error("Fetch error:", err);
+                    await Swal.fire({
+                        title: "เกิดข้อผิดพลาด",
+                        text: "ไม่สามารถโหลดข้อมูลผู้ใช้ได้",
+                        icon: "error",
+                        confirmButtonColor: "#0c7e47",
+                    });
                 }
-            });
-        </script>
-    </body>
+
+                // Session check every 10 minutes
+                setInterval(async () => {
+                    try {
+                        await getUserId();
+                    } catch (err) {
+                        console.log("Session check failed:", err);
+                    }
+                }, 10 * 60 * 1000);
+            } catch (err) {
+                console.error("LIFF Init Error:", err);
+                await Swal.fire({
+                    title: "เกิดข้อผิดพลาด",
+                    text: "ไม่สามารถเชื่อมต่อกับ LINE ได้",
+                    icon: "error",
+                    confirmButtonColor: "#0c7e47",
+                }).then(() => window.location.reload());
+            }
+        });
+
+        // Handle page visibility change
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) {
+                setTimeout(() => {
+                    if (
+                        typeof liff !== "undefined" &&
+                        liff.isReady() &&
+                        liff.isLoggedIn()
+                    ) {
+                        console.log(
+                            "User returned from login - reloading page"
+                        );
+                        window.location.reload();
+                    }
+                }, 1000);
+            }
+        });
+
+        // Handle window focus
+        window.addEventListener("focus", () => {
+            if (
+                typeof liff !== "undefined" &&
+                liff.isReady() &&
+                liff.isLoggedIn()
+            ) {
+                console.log("Window focused and user is logged in");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+
 </html>
