@@ -179,29 +179,10 @@
 
             <div class="form-group">
                 <label for="appointmentTime">🕐 เวลาที่นัด:</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <select id="appointmentHour" required
-                        style="flex: 1; padding: 12px; border: 2px solid #e8f5e8; border-radius: 10px; font-size: 1rem;">
-                        <option value="">ชั่วโมง</option>
-                        <option value="08">08</option>
-                        <option value="09">09</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                        <option value="13">13</option>
-                        <option value="14">14</option>
-                        <option value="15">15</option>
-                        <option value="16">16</option>
-                    </select>
-                    <span style="font-weight: bold; color: #0c7e47;">:</span>
-                    <select id="appointmentMinute" required
-                        style="flex: 1; padding: 12px; border: 2px solid #e8f5e8; border-radius: 10px; font-size: 1rem;">
-                        <option value="">นาที</option>
-                        <option value="00">00</option>
-                        <option value="30">30</option>
-                    </select>
-                </div>
-                <input type="hidden" id="appointmentTime" name="time" required>
+                <select id="appointmentTime" name="time" required
+                    style="width: 100%; padding: 12px 16px; border: 2px solid #e8f5e8; border-radius: 10px; font-size: 1rem;">
+                    <option value="">-- เลือกเวลา --</option>
+                </select>
                 <div class="error-msg" id="timeError"></div>
             </div>
 
@@ -220,6 +201,24 @@
     </div>
 
     <script>
+        function generateTimeOptions() {
+            const select = document.getElementById('appointmentTime');
+            const start = 8 * 60;
+            const end = 20 * 60;
+            const step = 30;
+
+            for (let mins = start; mins <= end; mins += step) {
+                const hours = String(Math.floor(mins / 60)).padStart(2, '0');
+                const minutes = String(mins % 60).padStart(2, '0');
+                const timeStr = `${hours}:${minutes}`;
+
+                const option = document.createElement('option');
+                option.value = timeStr;
+                option.textContent = timeStr;
+                select.appendChild(option);
+            }
+        }
+
         // เมื่อ submit form ให้รวมชั่วโมงกับนาทีเป็น time format
         document.querySelector('form').addEventListener('submit', function (e) {
             const hour = document.getElementById('appointmentHour').value;
@@ -297,7 +296,7 @@
                 }
             }
 
-            if (!data.time) {
+            if (!data.time || data.time === "") {
                 showError('timeError', 'กรุณาเลือกเวลานัด');
                 isValid = false;
             }
@@ -474,7 +473,10 @@
         };
 
         // Start the app
-        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', () => {
+            generateTimeOptions();
+            initApp();
+        });
     </script>
 </body>
 

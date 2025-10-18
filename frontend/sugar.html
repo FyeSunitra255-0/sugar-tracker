@@ -620,7 +620,7 @@
                 const form = document.getElementById("sugarForm");
                 const submitBtn = document.querySelector(".submit-btn");
                 const btnText = submitBtn.querySelector(".btn-text");
-                const btnIcon = submitBtn.querySelector("i.fa-save");
+                // const btnIcon = submitBtn.querySelector("i.fa-save");
                 const loadingSpinner =
                     submitBtn.querySelector(".loading-spinner");
 
@@ -680,7 +680,7 @@
                     // show loading
                     submitBtn.disabled = true;
                     btnText.textContent = "กำลังบันทึก...";
-                    btnIcon.style.display = "none";
+                    // btnIcon.style.display = "none";
                     loadingSpinner.style.display = "inline-block";
 
                     try {
@@ -762,7 +762,7 @@
                     } finally {
                         submitBtn.disabled = false;
                         btnText.textContent = "บันทึกข้อมูล";
-                        btnIcon.style.display = "inline-block";
+                        // btnIcon.style.display = "inline-block";
                         loadingSpinner.style.display = "none";
                     }
                 });

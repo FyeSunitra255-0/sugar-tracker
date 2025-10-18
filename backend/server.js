@@ -664,25 +664,27 @@ app.post("/appointment", async (req, res) => {
   }
 
   try {
-    // ตรวจสอบข้อมูลเก่า (optional)
+    // ดึงข้อมูลเก่าจากชีท
     const existing = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: "DoctorAppointments!A:D",
     });
 
     const rows = existing.data.values || [];
+
+    // ป้องกันซ้ำวันเดียวกัน
     const isDuplicate = rows.some(
-      (row) => row[0] === userId && row[1] === date && row[2] === time
+      (row) => row[0] === userId && row[1] === date
     );
 
     if (isDuplicate) {
       return res.json({
         success: false,
-        message: "คุณได้บันทึกนัดนี้แล้ว",
+        message: `คุณมีการนัดหมายในวันที่ ${date} อยู่แล้ว ไม่สามารถเพิ่มซ้ำได้`,
       });
     }
 
-    // เพิ่มข้อมูลใหม่
+    // บันทึกข้อมูลใหม่ลงชีท
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: "DoctorAppointments!A:D",
@@ -690,7 +692,29 @@ app.post("/appointment", async (req, res) => {
       requestBody: { values: [[userId, date, time, note || ""]] },
     });
 
-    res.json({ success: true, message: "บันทึกการนัดหมายเรียบร้อย" });
+    // แจ้งเตือนใน LINE OA
+    try {
+      const message = {
+        type: "text",
+        text:
+          `🏥 ยืนยันการนัดหมายแพทย์\n\n` +
+          `📅 วันที่: ${date}\n` +
+          `⏰ เวลา: ${time}\n` +
+          `📝 หมายเหตุ: ${note || "ไม่มี"}\n\n` +
+          `💚 กรุณามาตรงเวลานะครับ/ค่ะ`,
+      };
+
+      await lineClient.pushMessage(userId, message);
+      console.log(`ส่งข้อความยืนยันการนัดหมายให้ ${userId} แล้ว`);
+    } catch (pushError) {
+      console.error(`ส่งข้อความแจ้งเตือนไม่ได้:`, pushError);
+    }
+
+    // ตอบกลับ frontend
+    res.json({
+      success: true,
+      message: "บันทึกการนัดหมายเรียบร้อย พร้อมส่งแจ้งเตือนทาง LINE แล้ว",
+    });
   } catch (err) {
     console.error("Google Sheets Error:", err);
     res.json({ success: false, message: err.message });
@@ -989,9 +1013,10 @@ app.post("/test-single-reminder", async (req, res) => {
   }
 
   try {
+    const now = new Date();
     const testAppointment = {
-      date: "2025-09-15",
-      time: "14:30",
+      date: now.toISOString().split("T")[0],
+      time: now.toTimeString().split(" ")[0].slice(0, 5),
       note: "นัดทดสอบระบบ",
     };
 
