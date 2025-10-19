@@ -896,14 +896,51 @@ async function sendReminderMessage(userId, appointment) {
 }
 
 // ฟังก์ชันดึงข้อมูลการนัดหมายที่ต้องแจ้งเตือน
+// async function getAppointmentsToRemind() {
+//   try {
+//     // คำนวณวันพรุ่งนี้ (วันที่ต้องแจ้งเตือน)
+//     const tomorrow = new Date();
+//     tomorrow.setDate(tomorrow.getDate() + 1);
+//     const tomorrowDateString = tomorrow.toISOString().split("T")[0]; // YYYY-MM-DD
+
+//     console.log(`Checking appointments for date: ${tomorrowDateString}`);
+
+//     // ดึงข้อมูลจาก Google Sheets
+//     const result = await sheets.spreadsheets.values.get({
+//       spreadsheetId: SPREADSHEET_ID,
+//       range: "DoctorAppointments!A:D",
+//     });
+
+//     const rows = result.data.values || [];
+
+//     // กรองเฉพาะการนัดหมายที่ตรงกับวันพรุ่งนี้
+//     const appointmentsToRemind = rows
+//       .slice(1) // ข้าม header
+//       .filter((row) => row && row[1] === tomorrowDateString)
+//       .map((row) => ({
+//         userId: row[0],
+//         date: row[1],
+//         time: row[2],
+//         note: row[3] || "",
+//       }));
+
+//     console.log(`Found ${appointmentsToRemind.length} appointments to remind`);
+//     return appointmentsToRemind;
+//   } catch (error) {
+//     console.error("Error fetching appointments to remind:", error);
+//     return [];
+//   }
+// }
+
+// ฟังก์ชันดึงข้อมูลการนัดหมายที่ต้องแจ้งเตือน (วันนี้)
 async function getAppointmentsToRemind() {
   try {
-    // คำนวณวันพรุ่งนี้ (วันที่ต้องแจ้งเตือน)
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowDateString = tomorrow.toISOString().split("T")[0]; // YYYY-MM-DD
+    // ✅ ใช้วันที่ปัจจุบันตามเวลาไทย
+    const nowUtc = new Date();
+    const bangkok = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000);
+    const todayDateString = bangkok.toISOString().split("T")[0]; // YYYY-MM-DD
 
-    console.log(`Checking appointments for date: ${tomorrowDateString}`);
+    console.log(`Checking appointments for date: ${todayDateString}`);
 
     // ดึงข้อมูลจาก Google Sheets
     const result = await sheets.spreadsheets.values.get({
@@ -913,10 +950,10 @@ async function getAppointmentsToRemind() {
 
     const rows = result.data.values || [];
 
-    // กรองเฉพาะการนัดหมายที่ตรงกับวันพรุ่งนี้
+    // ✅ กรองเฉพาะนัดที่ตรงกับ “วันนี้”
     const appointmentsToRemind = rows
-      .slice(1) // ข้าม header
-      .filter((row) => row && row[1] === tomorrowDateString)
+      .slice(1)
+      .filter((row) => row && row[1] === todayDateString)
       .map((row) => ({
         userId: row[0],
         date: row[1],
