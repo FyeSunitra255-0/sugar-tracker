@@ -18,13 +18,13 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f9f9f9 0%, #e8f5e8 100%);
+            background: linear-gradient(135deg, #f9f9f9 0%, #e6d9ee 100%);
             min-height: 100vh;
-            color: #2c5530;
+            color: #30223c;
         }
 
         .header {
-            background: linear-gradient(135deg, #0c7e47 0%, #0d8a4d 100%);
+            background: linear-gradient(135deg, #5e2d88 0%, #d3b9e6 100%);
             padding: 2rem 0;
             text-align: center;
             box-shadow: 0 4px 20px rgba(12, 126, 71, 0.3);
@@ -61,13 +61,13 @@
         }
 
         .card-header {
-            background: linear-gradient(135deg, #9fc780 0%, #a8d085 100%);
+            background: linear-gradient(135deg, #a280c7 0%, #b185d0 100%);
             padding: 1.5rem 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .card-header h2 {
-            color: #0c7e47;
+            color: #ffffff;
             font-size: 1.5rem;
             font-weight: 600;
             display: flex;
@@ -87,7 +87,7 @@
             box-shadow: 0 8px 32px rgba(12, 126, 71, 0.08);
             margin-bottom: 2rem;
             overflow: hidden;
-            border: 1px solid rgba(159, 199, 128, 0.2);
+            border: 1px solid rgba(186, 128, 199, 0.2);
         }
 
         .tab-btn {
@@ -108,13 +108,13 @@
         }
 
         .tab-btn.active {
-            background: linear-gradient(135deg, #9fc780 0%, #a8d085 100%);
-            color: #0c7e47;
+            background: linear-gradient(135deg, #a280c7 0%, #b185d0 100%);
+            color: #ffffff;
         }
 
         .tab-btn:hover:not(.active) {
-            background: rgba(159, 199, 128, 0.1);
-            color: #0c7e47;
+            background: rgba(188, 128, 199, 0.1);
+            color: #5e2d88;
         }
 
         .tab-btn::after {
@@ -124,7 +124,7 @@
             left: 50%;
             width: 0;
             height: 3px;
-            background: #0c7e47;
+            background: #5e2d88;
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
@@ -155,7 +155,7 @@
 
         .status-loading {
             background: rgba(159, 199, 128, 0.2);
-            color: #0c7e47;
+            color: #5e2d88;
         }
 
         .status-error {
@@ -176,7 +176,7 @@
         .loading {
             text-align: center;
             padding: 3rem;
-            color: #0c7e47;
+            color: #5e2d88;
             font-size: 1.1rem;
         }
 
@@ -232,7 +232,7 @@
         }
 
         th {
-            background: linear-gradient(135deg, #0c7e47 0%, #0d8a4d 100%);
+            background: linear-gradient(135deg, #c083ec 0%, #cea1ee 100%);
             color: white;
             padding: 1rem;
             text-align: left;
@@ -266,7 +266,7 @@
         }
 
         .pagination button {
-            background: linear-gradient(135deg, #0c7e47 0%, #0d8a4d 100%);
+            background: linear-gradient(135deg, #5e2d88 0%, #d3b9e6 100%);
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
@@ -291,7 +291,7 @@
 
         .pagination .current {
             background: rgba(159, 199, 128, 0.2);
-            color: #0c7e47;
+            color: #5e2d88;
             padding: 0.75rem 1.5rem;
             border-radius: 25px;
             font-weight: 600;
@@ -356,11 +356,11 @@
         }
 
         .swal2-title {
-            color: #0c7e47 !important;
+            color: #5e2d88 !important;
         }
 
         .swal2-confirm {
-            background: linear-gradient(135deg, #0c7e47 0%, #0d8a4d 100%) !important;
+            background: linear-gradient(135deg, #5e2d88 0%, #d3b9e6 100%) !important;
             border-radius: 25px !important;
             padding: 0.75rem 2rem !important;
             font-weight: 600 !important;
@@ -821,7 +821,7 @@
                                 size: 16,
                                 weight: '600'
                             },
-                            color: '#0c7e47',
+                            color: '#5c2987',
                             padding: 20
                         }
                     },
@@ -837,13 +837,13 @@
                                     size: 12,
                                     weight: '600'
                                 },
-                                color: '#0c7e47'
+                                color: '#5c2987'
                             },
                             grid: {
                                 color: 'rgba(159, 199, 128, 0.2)'
                             },
                             ticks: {
-                                color: '#0c7e47'
+                                color: '#5c2987'
                             }
                         },
                         x: {
@@ -851,7 +851,7 @@
                                 color: 'rgba(159, 199, 128, 0.2)'
                             },
                             ticks: {
-                                color: '#0c7e47'
+                                color: '#5c2987'
                             }
                         }
                     },
@@ -908,8 +908,8 @@
                         tr.innerHTML = `
                             <td><i class="fas fa-calendar-day" style="color: #9fc780; margin-right: 0.5rem;"></i>${r.date}</td>
                             <td><i class="fas fa-clock" style="color: #9fc780; margin-right: 0.5rem;"></i>${r.period}</td>
-                            <td><span style="background: rgba(159, 199, 128, 0.2); color: #0c7e47; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">${r.type}</span></td>
-                            <td><strong style="color: #0c7e47; font-size: 1.1rem;">${r.sugar}</strong></td>
+                            <td><span style="background: rgba(159, 199, 128, 0.2); color: #5c2987; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">${r.type}</span></td>
+                            <td><strong style="color: #5c2987; font-size: 1.1rem;">${r.sugar}</strong></td>
                         `;
                         tbody.appendChild(tr);
                     });

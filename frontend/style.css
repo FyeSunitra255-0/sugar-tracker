@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f9f9f9 0%, #e8f5e8 100%);
+    background: linear-gradient(135deg, #f9f9f9 0%, #e6d9ee 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -32,7 +32,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #0c7e47, #9fc780);
+    background: linear-gradient(90deg, #5f2a89, #d3b9e6);
 }
 
 .header {
@@ -42,13 +42,13 @@ body {
 
 .header i {
     font-size: 3rem;
-    color: #0c7e47;
+    color: #5f2a89;
     margin-bottom: 15px;
     display: block;
 }
 
 .header h2 {
-    color: #0c7e47;
+    color: #5f2a89;
     font-size: 1.8rem;
     font-weight: 600;
     margin-bottom: 8px;
@@ -66,7 +66,7 @@ body {
 
 .form-group label {
     display: block;
-    color: #0c7e47;
+    color: #5f2a89;
     font-weight: 500;
     margin-bottom: 8px;
     font-size: 0.95rem;
@@ -81,7 +81,7 @@ body {
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #9fc780;
+    color: #d3b9e6;
     font-size: 1.1rem;
     z-index: 1;
 }
@@ -90,7 +90,7 @@ input,
 select {
     width: 100%;
     padding: 15px 15px 15px 45px;
-    border: 2px solid #e8f5e8;
+    border: 2px solid #e6d9ee;
     border-radius: 12px;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -100,7 +100,7 @@ select {
 input:focus,
 select:focus {
     outline: none;
-    border-color: #9fc780;
+    border-color: #d3b9e6;
     background: white;
     box-shadow: 0 0 0 3px rgba(159, 199, 128, 0.1);
 }
@@ -117,7 +117,7 @@ select {
 .submit-btn {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, #0c7e47, #9fc780);
+    background: linear-gradient(135deg, #5f2a89, #d3b9e6);
     color: white;
     border: none;
     border-radius: 12px;
@@ -193,7 +193,7 @@ select {
     flex-direction: column;
     align-items: center;
     padding: 15px 10px;
-    border: 2px solid #e8f5e8;
+    border: 2px solid #e6d9ee;
     border-radius: 12px;
     background: #f9f9f9;
     cursor: pointer;
@@ -206,12 +206,12 @@ select {
 .gender-option label i {
     font-size: 1.5rem;
     margin-bottom: 8px;
-    color: #9fc780;
+    color: #d3b9e6;
 }
 
 .gender-option input[type="radio"]:checked+label {
-    border-color: #0c7e47;
-    background: #0c7e47;
+    border-color: #5f2a89;
+    background: #5f2a89;
     color: white;
 }
 
@@ -223,7 +223,7 @@ select {
     text-align: center;
     margin-top: 25px;
     padding-top: 20px;
-    border-top: 1px solid #e8f5e8;
+    border-top: 1px solid #e6d9ee;
     color: #666;
     font-size: 0.85rem;
 }
@@ -258,14 +258,14 @@ select {
 }
 
 .swal2-success .swal2-success-ring {
-    border-color: #0c7e47;
+    border-color: #5f2a89;
 }
 
 .swal2-success .swal2-success-fix {
-    background-color: #0c7e47;
+    background-color: #5f2a89;
 }
 
 .swal2-success .swal2-success-circular-line-right,
 .swal2-success .swal2-success-circular-line-left {
-    background-color: #0c7e47;
+    background-color: #5f2a89;
 }

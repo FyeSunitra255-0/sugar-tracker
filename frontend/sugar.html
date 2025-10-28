@@ -17,7 +17,7 @@
 
         body {
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f9f9f9 0%, #e8f5e8 100%);
+            background: linear-gradient(135deg, #f9f9f9 0%, #e6d9ee 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -43,7 +43,7 @@
             left: 0;
             right: 0;
             height: 6px;
-            background: linear-gradient(90deg, #0c7e47, #9fc780);
+            background: linear-gradient(90deg, #5b2a80, #d3b9e6);
         }
 
         .header {
@@ -52,7 +52,7 @@
         }
 
         .header .icon {
-            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            background: linear-gradient(135deg, #5b2a80, #d3b9e6);
             border-radius: 50%;
             width: 80px;
             height: 80px;
@@ -69,7 +69,7 @@
         }
 
         .header h1 {
-            color: #0c7e47;
+            color: #5b2a80;
             font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 8px;
@@ -87,7 +87,7 @@
 
         .input-label {
             display: block;
-            color: #0c7e47;
+            color: #5b2a80;
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 15px;
@@ -102,19 +102,19 @@
         .sugar-input {
             width: 100%;
             padding: 20px 25px;
-            border: 3px solid #e8f5e8;
+            border: 3px solid #e6d9ee;
             border-radius: 20px;
             font-size: 2rem;
             font-weight: 700;
             text-align: center;
-            color: #0c7e47;
+            color: #5b2a80;
             background: #f9f9f9;
             transition: all 0.3s ease;
             outline: none;
         }
 
         .sugar-input:focus {
-            border-color: #9fc780;
+            border-color: #d3b9e6;
             background: white;
             box-shadow: 0 0 0 4px rgba(159, 199, 128, 0.1);
             transform: translateY(-2px);
@@ -125,7 +125,7 @@
             right: 25px;
             top: 50%;
             transform: translateY(-50%);
-            color: #9fc780;
+            color: #d3b9e6;
             font-size: 1.2rem;
             font-weight: 600;
             pointer-events: none;
@@ -257,7 +257,7 @@
         .submit-btn {
             width: 100%;
             padding: 18px;
-            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            background: linear-gradient(135deg, #5b2a80, #d3b9e6);
             color: white;
             border: none;
             border-radius: 20px;
@@ -314,15 +314,15 @@
         }
 
         .tips-section {
-            background: linear-gradient(135deg, #e8f5e8, #f0f9ff);
+            background: linear-gradient(135deg, #e6d9ee, #f0f9ff);
             border-radius: 15px;
             padding: 20px;
             margin-top: 30px;
-            border-left: 4px solid #9fc780;
+            border-left: 4px solid #d3b9e6;
         }
 
         .tips-section h3 {
-            color: #0c7e47;
+            color: #5b2a80;
             font-size: 1.1rem;
             margin-bottom: 12px;
             display: flex;
@@ -377,17 +377,17 @@
             align-items: center;
             cursor: pointer;
             background: #f9f9f9;
-            border: 2px solid #e8f5e8;
+            border: 2px solid #e6d9ee;
             border-radius: 15px;
             padding: 12px 20px;
             font-size: 1rem;
             font-weight: 600;
-            color: #0c7e47;
+            color: #5b2a80;
             transition: all 0.3s ease;
         }
 
         .radio-option:hover {
-            border-color: #9fc780;
+            border-color: #d3b9e6;
             background: #ffffff;
             box-shadow: 0 0 0 4px rgba(159, 199, 128, 0.1);
         }
@@ -401,7 +401,7 @@
         }
 
         .radio-option input:checked~span {
-            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            background: linear-gradient(135deg, #5b2a80, #d3b9e6);
             border-radius: 10px;
             padding: 5px 12px;
         }
@@ -462,6 +462,10 @@
                     <label class="radio-option">
                         <input id="period" type="radio" name="timeOfDay" value="evening" />
                         <span>เย็น</span>
+                    </label>
+                    <label class="radio-option">
+                        <input id="period" type="radio" name="timeOfDay" value="before_bed" />
+                        <span>ก่อนนอน</span>
                     </label>
                 </div>
             </div>

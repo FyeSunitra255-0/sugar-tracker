@@ -264,6 +264,8 @@ app.post("/sugar", async (req, res) => {
         ? "เช้า"
         : periodRaw === "evening"
         ? "เย็น"
+        : periodRaw === "before_bed"
+        ? "ก่อนนอน"
         : periodRaw;
 
     // 1) เช็คว่า user ลงทะเบียนหรือยัง
@@ -498,7 +500,7 @@ app.get("/sugar/:range", async (req, res) => {
       last7Dates.forEach((dateStr) => {
         const shortDate = dateStr.split("/").slice(0, 2).join("/"); // แปลง "5/9/2025" เป็น "5/9"
 
-        ["เช้า", "เย็น"].forEach((period) => {
+        ["เช้า", "เย็น", "ก่อนนอน"].forEach((period) => {
           labels.push(`${shortDate}-${period}`);
 
           // หาข้อมูลก่อนอาหาร
@@ -511,12 +513,19 @@ app.get("/sugar/:range", async (req, res) => {
             (r) => r[4] === dateStr && r[2] === "หลังอาหาร" && r[3] === period
           );
 
+          // หาข้อมูลก่อนนอน
+          const beforeBedRecord = userRecords.find(
+            (r) => r[4] === dateStr && r[2] === "ก่อนนอน" && r[3] === period
+          );
+
           beforeMeal.push(beforeRecord ? parseInt(beforeRecord[1]) : null);
           afterMeal.push(afterRecord ? parseInt(afterRecord[1]) : null);
+          beforeBed.push(beforeBedRecord ? parseInt(beforeBedRecord[1]) : null);
 
           console.log(`${shortDate}-${period}:`, {
             before: beforeRecord ? beforeRecord[1] : null,
             after: afterRecord ? afterRecord[1] : null,
+            beforeBed: beforeBedRecord ? beforeBedRecord[1] : null,
           });
         });
       });

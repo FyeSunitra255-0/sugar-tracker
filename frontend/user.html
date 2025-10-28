@@ -17,7 +17,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0c7e47 0%, #9fc780 100%);
+            background: linear-gradient(135deg, #5c2987 0%, #d3b9e6 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -47,7 +47,7 @@
 
         .header-icon i {
             font-size: 2.5rem;
-            background: linear-gradient(135deg, #0c7e47, #9fc780);
+            background: linear-gradient(135deg, #5c2987, #d3b9e6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -76,13 +76,13 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #0c7e47, #9fc780);
+            background: linear-gradient(90deg, #5c2987, #d3b9e6);
         }
 
         .profile-item {
             margin-bottom: 25px;
             padding-bottom: 25px;
-            border-bottom: 2px dashed #e8f5e8;
+            border-bottom: 2px dashed #e6d9ee;
             position: relative;
         }
 
@@ -121,8 +121,8 @@
         .loading-spinner-large {
             width: 60px;
             height: 60px;
-            border: 5px solid #e8f5e8;
-            border-top: 5px solid #0c7e47;
+            border: 5px solid #e6d9ee;
+            border-top: 5px solid #5c2987;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -175,7 +175,7 @@
             align-items: center;
             gap: 8px;
             padding: 6px 16px;
-            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            background: linear-gradient(135deg, #e6d9ee, #c8e6c9);
             color: #2e7d32;
             border-radius: 20px;
             font-weight: 700;
@@ -188,7 +188,7 @@
         }
 
         .birth-icon {
-            color: #0c7e47;
+            color: #5c2987;
         }
 
         @media (max-width: 480px) {
@@ -312,7 +312,7 @@
                         // Display user data
                         document.getElementById(
                             "fullName"
-                        ).textContent = `${user.firstName} ${user.lastName}`;
+                        ).textContent = `${user.firstName}`;
 
                         // Format gender
                         const genderMap = {
