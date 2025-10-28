@@ -459,6 +459,7 @@ app.get("/sugar/:range", async (req, res) => {
       labels: [],
       beforeMeal: [],
       afterMeal: [],
+      beforeBed: [],
     });
   }
 
@@ -477,6 +478,7 @@ app.get("/sugar/:range", async (req, res) => {
     let labels = [];
     let beforeMeal = [];
     let afterMeal = [];
+    let beforeBed = [];
 
     if (rangeType === "weekly") {
       // หาวันที่ที่มีข้อมูลทั้งหมด และเรียงตามวันที่
