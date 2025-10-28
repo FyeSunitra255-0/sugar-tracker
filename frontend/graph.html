@@ -735,10 +735,11 @@
                 return;
             }
 
-            const { labels, beforeMeal, afterMeal } = chartData;
+            const { labels, beforeMeal, afterMeal, beforeBed } = chartData;
 
             const normalBefore = Array(labels.length).fill(100);
             const normalAfter = Array(labels.length).fill(140);
+            const normalBeforeBed = Array(labels.length).fill(140);
 
             if (chart) {
                 chart.destroy();
@@ -804,7 +805,7 @@
                             borderWidth: 2
                         },
                         {
-                            label: 'ค่าปกติ หลังอาหาร (<140)',
+                            label: 'ค่าปกติ หลังอาหาร / ก่อนนอน (<140)',
                             data: normalAfter,
                             borderColor: '#E74C3C',
                             borderDash: [8, 4],

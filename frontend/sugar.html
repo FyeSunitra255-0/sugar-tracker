@@ -649,9 +649,9 @@
                     e.preventDefault();
 
                     const sugar = parseInt(sugarInput.value);
-                    const mealTiming = document.querySelector(
-                        'input[name="mealTiming"]:checked'
-                    );
+                    //const mealTiming = document.querySelector(
+                    //    'input[name="mealTiming"]:checked'
+                    //);
                     const timeOfDay = document.querySelector(
                         'input[name="timeOfDay"]:checked'
                     );
@@ -664,22 +664,32 @@
                             confirmButtonColor: "#0c7e47",
                         });
                     }
-                    if (!mealTiming) {
-                        return Swal.fire({
-                            title: "กรุณาเลือกช่วงเวลา",
-                            text: "กรุณาเลือกว่าเป็นก่อน/หลังอาหาร",
-                            icon: "warning",
-                            confirmButtonColor: "#0c7e47",
-                        });
-                    }
+                    //if (!mealTiming) {
+                    //    return Swal.fire({
+                    //        title: "กรุณาเลือกช่วงเวลา",
+                    //        text: "กรุณาเลือกว่าเป็นก่อน/หลังอาหาร",
+                    //        icon: "warning",
+                    //        confirmButtonColor: "#0c7e47",
+                    //    });
+                    //}
                     if (!timeOfDay) {
                         return Swal.fire({
                             title: "กรุณาเลือกเวลา",
-                            text: "กรุณาเลือกเช้า/เย็น",
+                            text: "กรุณาเลือกเช้า / เย็น / ก่อนนอน",
                             icon: "warning",
                             confirmButtonColor: "#0c7e47",
                         });
                     }
+
+                    if (timeOfDay.value !== "before_bed" && !mealTiming) {
+                        return Swal.fire({
+                            title: "กรุณาเลือกช่วงมื้ออาหาร",
+                            text: "กรุณาระบุว่าเป็นก่อนหรือหลังอาหาร",
+                            icon: "warning",
+                            confirmButtonColor: "#0c7e47",
+                        });
+                    }
+
 
                     // show loading
                     submitBtn.disabled = true;
@@ -695,9 +705,9 @@
                         const payload = {
                             userId: currentUserId,
                             sugar,
-                            mealTiming: mealTiming.value,
                             timeOfDay: timeOfDay.value,
                         };
+                        if (mealTiming) payload.mealTiming = mealTiming.value;
                         console.log("Sending:", payload);
 
                         const res = await fetch(

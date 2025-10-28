@@ -239,13 +239,7 @@ app.post("/sugar", async (req, res) => {
       req.body.period ?? req.body.timeOfDay ?? req.body.time_of_day;
 
     // ตรวจสอบความสมบูรณ์และชนิดข้อมูล
-    if (
-      !userId ||
-      !Number.isFinite(sugar) ||
-      sugar < 0 ||
-      !typeRaw ||
-      !periodRaw
-    ) {
+    if (!userId || !Number.isFinite(sugar) || sugar < 0 || !periodRaw) {
       return res.status(400).json({
         success: false,
         message: "ข้อมูลไม่ครบหรือไม่ถูกต้อง",
@@ -258,7 +252,7 @@ app.post("/sugar", async (req, res) => {
         ? "ก่อนอาหาร"
         : typeRaw === "after"
         ? "หลังอาหาร"
-        : typeRaw;
+        : "";
     const period =
       periodRaw === "morning"
         ? "เช้า"
@@ -267,6 +261,14 @@ app.post("/sugar", async (req, res) => {
         : periodRaw === "before_bed"
         ? "ก่อนนอน"
         : periodRaw;
+
+    // เฉพาะกรณีที่ไม่ใช่ก่อนนอน ต้องมี type
+    if (period !== "ก่อนนอน" && !typeRaw) {
+      return res.status(400).json({
+        success: false,
+        message: "กรุณาระบุช่วงมื้ออาหาร (ก่อน/หลังอาหาร)",
+      });
+    }
 
     // 1) เช็คว่า user ลงทะเบียนหรือยัง
     let existingUsers;
