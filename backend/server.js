@@ -176,9 +176,9 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const { userId, firstName, lastName, gender, birthDay } = req.body;
+  const { userId, firstName, gender, birthDay } = req.body;
 
-  if (!userId || !firstName || !lastName || !gender || !birthDay) {
+  if (!userId || !firstName || !gender || !birthDay) {
     return res.json({ success: false, message: "ข้อมูลไม่ครบ" });
   }
 
@@ -214,7 +214,7 @@ app.post("/register", async (req, res) => {
       range: RANGE,
       valueInputOption: "RAW",
       requestBody: {
-        values: [[userId, firstName, lastName, gender, birthDay, age]],
+        values: [[userId, firstName, gender, birthDay, age]],
       },
     });
 
