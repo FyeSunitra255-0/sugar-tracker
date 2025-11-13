@@ -135,14 +135,13 @@
           const data = {
             userId,
             firstName: formData.get('firstName').trim(),
-            lastName: formData.get('lastName').trim(),
             gender: formData.get('gender'),
             birthDay: formData.get('birthDay')
           };
 
           // Validation
-          if (!data.firstName || !data.lastName) {
-            throw new Error('กรุณากรอกชื่อและนามสกุล');
+          if (!data.firstName) {
+            throw new Error('กรุณากรอกชื่อ');
           }
 
           if (!data.gender) {
@@ -175,6 +174,7 @@
             });
 
             form.reset();
+            window.location.href = "user.html";
 
             // อาจจะ redirect หรือปิดหน้าต่าง LIFF
             // liff.closeWindow();

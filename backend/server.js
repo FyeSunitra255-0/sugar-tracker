@@ -128,7 +128,7 @@ app.get("/user", async (req, res) => {
     // อ่านข้อมูลจาก Google Sheet
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Users!A:F", // userId | firstName | lastName | gender | birthDay | age
+      range: "Users!A:E",
     });
 
     const rows = response.data.values;
@@ -156,10 +156,9 @@ app.get("/user", async (req, res) => {
     const user = {
       userId: userRow[0],
       firstName: userRow[1] || "",
-      lastName: userRow[2] || "",
-      gender: userRow[3] || "",
-      birthDay: userRow[4] || "",
-      age: userRow[5] || "",
+      gender: userRow[2] || "",
+      birthDay: userRow[3] || "",
+      age: userRow[4] || "",
     };
 
     return res.json({
